@@ -8,9 +8,8 @@
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
 <body>
-<div id="loader">
-    <div class="spinner"></div>
-</div>
+
+
 
 <header>
     <div class="logo">SUIT UP!</div>
@@ -30,10 +29,8 @@
                 <button>Login</button>
             </a>
         @endif
-        
     </div>
 </header>
-
 
 <section class="hero">
     <img src="{{ asset('images/superherobg.jpg') }}" alt="Superhero Costumes" class="hero-image">
@@ -41,42 +38,42 @@
         <p>What would you like to browse?</p>
         <div class="search-container">
             <i class="fas fa-search"></i>
-            <input type="text" placeholder="Search...">
+            <input type="text" id="searchInput" placeholder="Search...">
             <button>Search</button>
         </div>
     </div>
 </section>
 
-<section class="theme-grid">
-    <div class="theme">
+<section class="theme-grid" id="themeGrid">
+    <div class="theme" data-theme="halloween">
         <img src="{{ asset('images/halloween.jpg') }}" alt="Halloween">
         <p>Halloween</p>
     </div>
-    <div class="theme">
+    <div class="theme" data-theme="christmas">
         <img src="{{ asset('images/christmas.jpg') }}" alt="Christmas">
         <p>Christmas</p>
     </div>
-    <div class="theme">
+    <div class="theme" data-theme="cartoon">
         <img src="{{ asset('images/cartoon.jpg') }}" alt="Cartoons">
         <p>Cartoons</p>
     </div>
-    <div class="theme">
+    <div class="theme" data-theme="medieval">
         <img src="{{ asset('images/medieval.jpg') }}" alt="Medieval">
         <p>Medieval</p>
     </div>
-    <div class="theme">
+    <div class="theme" data-theme="animal">
         <img src="{{ asset('images/animal.jpg') }}" alt="Animal">
         <p>Animal</p>
     </div>
-    <div class="theme">
+    <div class="theme" data-theme="career">
         <img src="{{ asset('images/career.jpg') }}" alt="Career">
         <p>Career</p>
     </div>
-    <div class="theme">
+    <div class="theme" data-theme="historical">
         <img src="{{ asset('images/historical.jpg') }}" alt="Historical">
         <p>Historical</p>
     </div>
-    <div class="theme">
+    <div class="theme" data-theme="superhero">
         <img src="{{ asset('images/superhero.jpg') }}" alt="Superheroes">
         <p>Superheroes</p>
     </div>
@@ -129,20 +126,40 @@
 </footer>
 
 <script>
-        // Set a delay time for the loader to stay visible (in milliseconds)
-        const delayTime = 3000; // 3000ms = 3 seconds
+    document.addEventListener("DOMContentLoaded", function() {
+    const searchInput = document.getElementById("searchInput");
+    const themes = document.querySelectorAll(".theme");
+    const themeGrid = document.getElementById("themeGrid");
 
-        window.addEventListener('load', function() {
-            // Delay the hiding of the loader
-            setTimeout(function() {
-                const loader = document.getElementById('loader');
-                if (loader) {
-                    loader.style.opacity = '1';
-                    loader.style.visibility = 'hidden';
-                }
-            }, delayTime);
+    // Ensure all themes are visible initially
+    themes.forEach(theme => {
+        theme.style.display = "block";
+    });
+
+    searchInput.addEventListener("input", function() {
+        const query = searchInput.value.toLowerCase().trim();
+        let hasResults = false;
+
+        themes.forEach(theme => {
+            const themeName = theme.getAttribute("data-theme").toLowerCase();
+            if (themeName.includes(query)) {
+                theme.style.display = "block";
+                hasResults = true;
+            } else {
+                theme.style.display = "none";
+            }
         });
-    </script>
+
+        // Apply animation to results
+        if (hasResults) {
+            themeGrid.classList.add("visible");
+        } else {
+            themeGrid.classList.remove("visible");
+        }
+    });
+});
+
+</script>
 
 
 </body>
