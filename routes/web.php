@@ -3,11 +3,21 @@
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 
-Route::view('/', 'welcome');  // The homepage before login
-Route::view('/login', 'login')->name('login');      
+// Homepage route (first page users see, before login)
+Route::view('/', 'homepage')->name('homepage');  // Public homepage
+
+// Authentication Routes (for login and signup)
+Route::view('/login', 'login')->name('login');
 Route::view('/signup', 'signup')->name('signup');  // Signup page
-Route::view('/homepage', 'homepage')->name('homepage');
 
 Route::post('/signup', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
-Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth');  
+
+
+// Logout route (protected by auth middleware)
+Route::get('/logout', function () {
+    session()->forget('username');
+    return redirect('/');
+})->name('logout');
+
+

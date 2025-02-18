@@ -8,16 +8,32 @@
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
 <body>
+<div id="loader">
+    <div class="spinner"></div>
+</div>
 
 <header>
     <div class="logo">SUIT UP!</div>
     <div class="cart-login">
         <i class="fas fa-shopping-cart"></i>
-        <a href="{{ route('signup') }}">
-            <button>Login/Sign up</button>
-        </a>
+
+        @if(session('username'))
+            <p>Welcome, {{ session('username') }}!</p>
+            <a href="{{ route('logout') }}">
+                <button>Logout</button>
+            </a>
+        @else
+            <a href="{{ route('signup') }}">
+                <button>Sign up</button>
+            </a>
+            <a href="{{ route('login') }}">
+                <button>Login</button>
+            </a>
+        @endif
+        
     </div>
 </header>
+
 
 <section class="hero">
     <img src="{{ asset('images/superherobg.jpg') }}" alt="Superhero Costumes" class="hero-image">
@@ -111,6 +127,23 @@
         </ul>
     </div>
 </footer>
+
+<script>
+        // Set a delay time for the loader to stay visible (in milliseconds)
+        const delayTime = 3000; // 3000ms = 3 seconds
+
+        window.addEventListener('load', function() {
+            // Delay the hiding of the loader
+            setTimeout(function() {
+                const loader = document.getElementById('loader');
+                if (loader) {
+                    loader.style.opacity = '1';
+                    loader.style.visibility = 'hidden';
+                }
+            }, delayTime);
+        });
+    </script>
+
 
 </body>
 </html>
