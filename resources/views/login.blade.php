@@ -22,7 +22,7 @@
                     <input type="password" name="password" id="password" class="form-control" required>
                 </div>
 
-                <button type="submit" class="btn btn-success w-100">Login</button>
+                <button type="submit" class="btn btn-primary">Login</button>
             </form>
 
             <div class="mt-3 text-center">

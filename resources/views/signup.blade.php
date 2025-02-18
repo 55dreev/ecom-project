@@ -39,7 +39,7 @@
 
                 <button type="submit" class="btn btn-success w-100">Signup</button>
             </form>
-            <p>Already have an account? <a href="/login" class="link">Sign up</a></p>
+            <p>Already have an account? <a href="/login" class="link">Log in</a></p>
         </div>
     </div>
 
