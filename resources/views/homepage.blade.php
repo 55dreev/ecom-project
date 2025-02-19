@@ -1,36 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('Components.headerfooter')
+
+@section('content')
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Suit Up!</title>
     <link rel="stylesheet" href="css/homepage.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
-<body>
-
-
-
-<header>
-    <div class="logo">SUIT UP!</div>
-    <div class="cart-login">
-        <i class="fas fa-shopping-cart"></i>
-
-        @if(session('username'))
-            <p>Welcome, {{ session('username') }}!</p>
-            <a href="{{ route('logout') }}">
-                <button>Logout</button>
-            </a>
-        @else
-            <a href="{{ route('signup') }}">
-                <button>Sign up</button>
-            </a>
-            <a href="{{ route('login') }}">
-                <button>Login</button>
-            </a>
-        @endif
-    </div>
-</header>
 
 <section class="hero">
     <img src="{{ asset('images/superherobg.jpg') }}" alt="Superhero Costumes" class="hero-image">
@@ -82,13 +61,14 @@
 <section class="why-suit-up">
     <h2>Why Suit Up?</h2>
     <ul>
-        <li>Wide Selection – A diverse range of costumes for all occasions, from Halloween to themed parties.</li>
-        <li>High-Quality Materials – Durable and comfortable costumes designed to last.</li>
-        <li>Affordable Prices – Competitive pricing with great deals and discounts.</li>
-        <li>Customization Options – Unique, tailor-made costumes to fit your needs.</li>
-        <li>Fast & Reliable Shipping – Get your costume delivered on time, wherever you are.</li>
-        <li>Easy Returns & Exchanges – Hassle-free return policies for a stress-free experience.</li>
-        <li>Customer Support – Dedicated support team to help with sizing, orders, and more.</li>
+    <li><strong>Wide Selection</strong> – A diverse range of costumes for all occasions, from Halloween to themed parties.</li>
+    <li><strong>High-Quality Materials</strong> – Durable and comfortable costumes designed to last.</li>
+    <li><strong>Affordable Prices</strong> – Competitive pricing with great deals and discounts.</li>
+    <li><strong>Customization Options</strong> – Unique, tailor-made costumes to fit your needs.</li>
+    <li><strong>Fast & Reliable Shipping</strong> – Get your costume delivered on time, wherever you are.</li>
+    <li><strong>Easy Returns & Exchanges</strong> – Hassle-free return policies for a stress-free experience.</li>
+    <li><strong>Customer Support</strong> – Dedicated support team to help with sizing, orders, and more.</li>
+
     </ul>
 </section>
 
@@ -104,63 +84,37 @@
     </ul>
 </section>
 
-<footer>
-    <div class="column">
-        <h3>INFO</h3>
-        <ul>
-            <li>Location</li>
-            <li>Costumes</li>
-            <li>Pricing</li>
-            <li>Payment Methods</li>
-            <li>Delivery</li>
-            <li>FAQ's</li>
-        </ul>
-    </div>
-    <div class="column">
-        <h3>CONTACT US</h3>
-        <ul>
-            <li>Email: suitupdevs98@gmail.com</li>
-            <li>Phone: +63 9452958741</li>
-        </ul>
-    </div>
-</footer>
-
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-    const searchInput = document.getElementById("searchInput");
-    const themes = document.querySelectorAll(".theme");
-    const themeGrid = document.getElementById("themeGrid");
-
-    // Ensure all themes are visible initially
-    themes.forEach(theme => {
-        theme.style.display = "block";
-    });
-
-    searchInput.addEventListener("input", function() {
-        const query = searchInput.value.toLowerCase().trim();
-        let hasResults = false;
+        const searchInput = document.getElementById("searchInput");
+        const themes = document.querySelectorAll(".theme");
+        const themeGrid = document.getElementById("themeGrid");
 
         themes.forEach(theme => {
-            const themeName = theme.getAttribute("data-theme").toLowerCase();
-            if (themeName.includes(query)) {
-                theme.style.display = "block";
-                hasResults = true;
-            } else {
-                theme.style.display = "none";
-            }
+            theme.style.display = "block";
         });
 
-        // Apply animation to results
-        if (hasResults) {
-            themeGrid.classList.add("visible");
-        } else {
-            themeGrid.classList.remove("visible");
-        }
-    });
-});
+        searchInput.addEventListener("input", function() {
+            const query = searchInput.value.toLowerCase().trim();
+            let hasResults = false;
 
+            themes.forEach(theme => {
+                const themeName = theme.getAttribute("data-theme").toLowerCase();
+                if (themeName.includes(query)) {
+                    theme.style.display = "block";
+                    hasResults = true;
+                } else {
+                    theme.style.display = "none";
+                }
+            });
+
+            if (hasResults) {
+                themeGrid.classList.add("visible");
+            } else {
+                themeGrid.classList.remove("visible");
+            }
+        });
+    });
 </script>
 
-
-</body>
-</html>
+@endsection
