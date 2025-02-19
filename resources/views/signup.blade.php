@@ -40,6 +40,8 @@
                 <button type="submit" class="btn btn-success w-100">Signup</button>
             </form>
             <p>Already have an account? <a href="/login" class="link">Log in</a></p>
+            <p><a href="{{ route('homepage') }}">Go back</a></p>
+
         </div>
     </div>
 

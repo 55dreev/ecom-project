@@ -11,13 +11,13 @@
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
 
-<section class="hero">
+<section class="hero" id="hero">
     <img src="{{ asset('images/superherobg.jpg') }}" alt="Superhero Costumes" class="hero-image">
     <div class="search-box">
-        <p>What would you like to browse?</p>
+        <p>What theme would you like to browse?</p>
         <div class="search-container">
             <i class="fas fa-search"></i>
-            <input type="text" id="searchInput" placeholder="Search...">
+            <input type="text" id="searchInput" placeholder="Search a theme">
             <button>Search</button>
         </div>
     </div>
@@ -58,7 +58,8 @@
     </div>
 </section>
 
-<section class="why-suit-up">
+<section class="why-suit-up" id="why-suit-up">
+
     <h2>Why Suit Up?</h2>
     <ul>
     <li><strong>Wide Selection</strong> – A diverse range of costumes for all occasions, from Halloween to themed parties.</li>
@@ -72,7 +73,8 @@
     </ul>
 </section>
 
-<section class="about-us">
+<section class="about-us" id="about-us">
+
     <h3>About Us</h3>
     <ul>
         <li>Finding the perfect costume should be fun and hassle-free, and that’s exactly what our website offers! 
@@ -112,6 +114,20 @@
                 themeGrid.classList.add("visible");
             } else {
                 themeGrid.classList.remove("visible");
+            }
+        });
+    });
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function(event) {
+            event.preventDefault();
+            const targetId = this.getAttribute("href").substring(1);
+            const targetElement = document.getElementById(targetId);
+
+            if (targetElement) {
+                window.scrollTo({
+                    top: targetElement.offsetTop,
+                    behavior: "smooth"
+                });
             }
         });
     });
