@@ -5,12 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
+            background-color: #E8E6F1;
             padding: 0;
-            background-color: #fff; /* White main background */
             display: flex;
         }
         .sidebar {
@@ -45,13 +47,21 @@
             color: white;
             transform: scale(1.05);
         }
-        .signout {
-            margin-top: auto;
-            background: #bf1134 !important; /* Red sign-out button */
+
+        .signout-btn {
+            display: block;
+            padding: 12px;
+            background: #f8f9fa !important;
             color: white;
+            text-decoration: none;
+            text-align: center;
+            border-radius: 12px;
+            transition: background 0.3s ease-in-out, transform 0.2s ease-in-out;
         }
-        .signout:hover {
+
+        .signout-btn:hover {
             background: #b71c1c !important;
+            transform: scale(1.05);
         }
         .main-content {
             flex: 1;
@@ -91,20 +101,24 @@
             margin-top: 20px;
             box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
         }
+        .sidebar-btn i {
+            margin-right: 10px; 
+        }
     </style>
 </head>
 <body>
 <div class="sidebar d-flex flex-column">
 <img src="{{ asset('images/suitup.png') }}" alt="Suit Up Logo" class="img-fluid mb-3" style="max-width: 150px; margin-left: 35px;">
 
-    
-    <a href="#" class="sidebar-btn">Dashboard</a>
-    <a href="#" class="sidebar-btn">Orders</a>
-    <a href="#" class="sidebar-btn">Products</a>
-    <a href="#" class="sidebar-btn">Chat</a>
+        
+    <a href="#" class="sidebar-btn"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+    <a href="#" class="sidebar-btn"><i class="fas fa-box"></i> Orders</a>
+    <a href="#" class="sidebar-btn"><i class="fas fa-shopping-cart"></i> Products</a>
+    <a href="#" class="sidebar-btn"><i class="fas fa-comments"></i> Chat</a>
+
 
     <!-- Sign Out button at the bottom -->
-    <a href="{{ route('logout') }}" class="sidebar-btn mt-auto">Sign Out</a>
+    <a href="{{ route('logout') }}" class="signout-btn mt-auto">Sign Out</a>
 </div>
 
 
@@ -112,20 +126,20 @@
     <div class="main-content">
         <div class="header d-flex justify-content-between align-items-center">
             <input type="text" class="form-control w-50" placeholder="Search here">
-            <span>Hello, Admin</span>
+            <!--  <span>Hello, Admin</span>  -->
         </div>
 
-        <div class="dashboard-stats row">
-            <div class="col-md-3">
+        <div class="dashboard-stats row justify-content-center">
+            <div class="col-md-2">
                 <div class="stat-box">Total Orders</div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <div class="stat-box">Total Delivered</div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <div class="stat-box">Total Canceled</div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <div class="stat-box">Total Revenue</div>
             </div>
         </div>
