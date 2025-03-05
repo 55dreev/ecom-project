@@ -13,11 +13,16 @@ Route::view('/signup', 'signup')->name('signup');  // Signup page
 Route::post('/signup', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
-
 // Logout route (protected by auth middleware)
 Route::get('/logout', function () {
     session()->forget('username');
     return redirect('/');
 })->name('logout');
 
+// Product route
+Route::get('/product/{id}', function ($id) {
+    return "Product details for product ID: " . $id;
+})->name('product.show');
+
+Route::view('/booking-form', 'bookingform')->name('bookingform');
 

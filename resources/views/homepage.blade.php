@@ -1,136 +1,51 @@
-@extends('Components.headerfooter')
+@extends('layouts.app')
+
+@section('title', 'Home - T Shop')
 
 @section('content')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Suit Up!</title>
-    <link rel="stylesheet" href="css/homepage.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-</head>
+<!-- Hero Section -->
+<div class="container text-center my-5">
+    <h1><strong>Welcome</strong> to Suit Up</h1>
+    <div class="highlight">Find Your Perfect Costume</div>
+</div>
 
-<section class="hero" id="hero">
-    <img src="{{ asset('images/superherobg.jpg') }}" alt="Superhero Costumes" class="hero-image">
-    <div class="search-box">
-        <p>What theme would you like to browse?</p>
-        <div class="search-container">
-            <i class="fas fa-search"></i>
-            <input type="text" id="searchInput" placeholder="Search a theme">
-            <button>Search</button>
-        </div>
+<!-- Product Grid -->
+<div class="container text-center">
+    <div class="row">
+        <div class="col"><img src="{{ asset('clothes.svg') }}" alt="Product 1" class="img-fluid"></div>
+        <div class="col"><img src="{{ asset('images/clothes.svg') }}" alt="Product 2" class="img-fluid"></div>
+        <div class="col"><img src="{{ asset('images/girl.svg') }}" alt="Product 3" class="img-fluid"></div>
     </div>
-</section>
+</div>
 
-<section class="theme-grid" id="themeGrid">
-    <div class="theme" data-theme="halloween">
-        <img src="{{ asset('images/halloween.jpg') }}" alt="Halloween">
-        <p>Halloween</p>
+<!-- Latest Additions -->
+<div class="container mt-5">
+    <h2 class="text-center mb-4 fw-bold">Latest Additions</h2>
+    <div class="row g-3">
+        @php
+            $products = [
+                ['id' => 1, 'name' => 'Classic Witch Costume', 'image' => 'gown.svg', 'price' => '75.00'],
+                ['id' => 2, 'name' => 'Skeleton Gloves', 'image' => 'glove.jpg', 'price' => '18.00'],
+                ['id' => 3, 'name' => 'Retro Sunglasses', 'image' => 'glasses.png', 'price' => '20.00'],
+                ['id' => 4, 'name' => 'Zombie Makeup Kit', 'image' => 'makeup.png', 'price' => '40.00'],
+            ];
+        @endphp
+
+        @foreach($products as $product)
+            <div class="col-md-3">
+                <div class="card h-100 border-0">
+                    <a href="{{ route('product.show', ['id' => $product['id']]) }}">
+                        <img src="{{ asset('images/' . $product['image']) }}" class="card-img-top img-fluid" alt="{{ $product['name'] }}" style="height: 350px; object-fit: cover;">
+                    </a>
+                    <div class="card-body text-center">
+                        <h6 class="card-title">{{ $product['name'] }}</h6>
+                        <p class="card-text">${{ $product['price'] }}</p>
+                    </div>
+                </div>
+            </div>
+        @endforeach
     </div>
-    <div class="theme" data-theme="christmas">
-        <img src="{{ asset('images/christmas.jpg') }}" alt="Christmas">
-        <p>Christmas</p>
-    </div>
-    <div class="theme" data-theme="cartoon">
-        <img src="{{ asset('images/cartoon.jpg') }}" alt="Cartoons">
-        <p>Cartoons</p>
-    </div>
-    <div class="theme" data-theme="medieval">
-        <img src="{{ asset('images/medieval.jpg') }}" alt="Medieval">
-        <p>Medieval</p>
-    </div>
-    <div class="theme" data-theme="animal">
-        <img src="{{ asset('images/animal.jpg') }}" alt="Animal">
-        <p>Animal</p>
-    </div>
-    <div class="theme" data-theme="career">
-        <img src="{{ asset('images/career.jpg') }}" alt="Career">
-        <p>Career</p>
-    </div>
-    <div class="theme" data-theme="historical">
-        <img src="{{ asset('images/historical.jpg') }}" alt="Historical">
-        <p>Historical</p>
-    </div>
-    <div class="theme" data-theme="superhero">
-        <img src="{{ asset('images/superhero.jpg') }}" alt="Superheroes">
-        <p>Superheroes</p>
-    </div>
-</section>
-
-<section class="why-suit-up" id="why-suit-up">
-
-    <h2>Why Suit Up?</h2>
-    <ul>
-    <li><strong>Wide Selection</strong> – A diverse range of costumes for all occasions, from Halloween to themed parties.</li>
-    <li><strong>High-Quality Materials</strong> – Durable and comfortable costumes designed to last.</li>
-    <li><strong>Affordable Prices</strong> – Competitive pricing with great deals and discounts.</li>
-    <li><strong>Customization Options</strong> – Unique, tailor-made costumes to fit your needs.</li>
-    <li><strong>Fast & Reliable Shipping</strong> – Get your costume delivered on time, wherever you are.</li>
-    <li><strong>Easy Returns & Exchanges</strong> – Hassle-free return policies for a stress-free experience.</li>
-    <li><strong>Customer Support</strong> – Dedicated support team to help with sizing, orders, and more.</li>
-
-    </ul>
-</section>
-
-<section class="about-us" id="about-us">
-
-    <h3>About Us</h3>
-    <ul>
-        <li>Finding the perfect costume should be fun and hassle-free, and that’s exactly what our website offers! 
-            We provide a wide selection of costumes for every occasion, whether it’s Halloween, cosplay, or a themed party. 
-            Our costumes are made from high-quality materials to ensure durability and comfort, all at affordable prices. 
-            Need something unique? We offer customization options to bring your vision to life. With fast and reliable shipping, 
-            you’ll never have to worry about last-minute costume needs. Plus, our easy returns and exchanges mean you can shop with confidence. 
-            If you ever need assistance, our friendly customer support team is here to help. Suit up with us and make your next event unforgettable!</li>
-    </ul>
-</section>
-
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const searchInput = document.getElementById("searchInput");
-        const themes = document.querySelectorAll(".theme");
-        const themeGrid = document.getElementById("themeGrid");
-
-        themes.forEach(theme => {
-            theme.style.display = "block";
-        });
-
-        searchInput.addEventListener("input", function() {
-            const query = searchInput.value.toLowerCase().trim();
-            let hasResults = false;
-
-            themes.forEach(theme => {
-                const themeName = theme.getAttribute("data-theme").toLowerCase();
-                if (themeName.includes(query)) {
-                    theme.style.display = "block";
-                    hasResults = true;
-                } else {
-                    theme.style.display = "none";
-                }
-            });
-
-            if (hasResults) {
-                themeGrid.classList.add("visible");
-            } else {
-                themeGrid.classList.remove("visible");
-            }
-        });
-    });
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener("click", function(event) {
-            event.preventDefault();
-            const targetId = this.getAttribute("href").substring(1);
-            const targetElement = document.getElementById(targetId);
-
-            if (targetElement) {
-                window.scrollTo({
-                    top: targetElement.offsetTop,
-                    behavior: "smooth"
-                });
-            }
-        });
-    });
-</script>
+</div>
 
 @endsection
