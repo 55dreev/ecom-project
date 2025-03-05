@@ -14,12 +14,7 @@
     <link rel="stylesheet" href="{{ asset('css/categoriespage.css') }}">
 </head>
 
-<body>
-    <!-- Promo Banner -->
-    <div class="promo-banner">
-        Sale is on! 25% off sitewide using TEE25 at checkout
-    </div>
-
+<body>  
     <div class="container mt-4">
         <div class="row">
             <!-- Filter Section (Left) -->
@@ -48,70 +43,71 @@
         <!-- Product Cards Section (Right) -->
         
         <div class="col-md-9">
-            <div class="row" id="productContainer">
-                <h1 class="text-start mb-4 fw-bold">Latest Additions</h1>
-                <div class="col-md-3 col-sm-6 mb-4" data-price="75">
-                    <div class="card h-100 border-0">
-                        <img src="/public/images/gown.svg" class="card-img-top img-fluid" 
-                             alt="Classic Witch Costume" 
-                             style="max-height: 350px; object-fit: contain;">
-                        <div class="card-body text-center">
-                            <h6 class="card-title">Classic Witch Costume</h6>
-                            <p class="card-text">$75.00</p>
-                        </div>
-                    </div>
-                </div>
+    <div class="row" id="productContainer">
+        <h1 class="text-start mb-4 fw-bold">Latest Additions</h1>
         
-                <div class="col-md-3 col-sm-6 mb-4" data-price="18">
-                    <div class="card h-100 border-0">
-                        <img src="/public/images/glove.jpg" class="card-img-top img-fluid" 
-                             alt="Skeleton Gloves" 
-                             style="max-height: 350px; object-fit: contain;">
-                        <div class="card-body text-center">
-                            <h6 class="card-title">Skeleton Gloves</h6>
-                            <p class="card-text">$18.00</p>
-                        </div>
-                    </div>
+        <div class="col-md-3 col-sm-6 mb-4" data-price="75">
+            <div class="card h-100 border-0">
+                <img src="{{ asset('images/gown.svg') }}" class="card-img-top img-fluid" 
+                     alt="Classic Witch Costume" 
+                     style="max-height: 350px; object-fit: contain;">
+                <div class="card-body text-center">
+                    <h6 class="card-title">Classic Witch Costume</h6>
+                    <p class="card-text">$75.00</p>
                 </div>
-        
-                <div class="col-md-3 col-sm-6 mb-4" data-price="20">
-                    <div class="card h-100 border-0">
-                        <img src="/SuitUp/images/glasses.png" class="card-img-top img-fluid" 
-                             alt="Retro Sunglasses" 
-                             style="max-height: 350px; object-fit: contain;">
-                        <div class="card-body text-center">
-                            <h6 class="card-title">Retro Sunglasses</h6>
-                            <p class="card-text">$20.00</p>
-                        </div>
-                    </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 col-sm-6 mb-4" data-price="18">
+            <div class="card h-100 border-0">
+                <img src="{{ asset('images/glove.jpg') }}" class="card-img-top img-fluid" 
+                     alt="Skeleton Gloves" 
+                     style="max-height: 350px; object-fit: contain;">
+                <div class="card-body text-center">
+                    <h6 class="card-title">Skeleton Gloves</h6>
+                    <p class="card-text">$18.00</p>
                 </div>
-        
-                <div class="col-md-3 col-sm-6 mb-4" data-price="40">
-                    <div class="card h-100 border-0">
-                        <img src="/SuitUp/images/makeup.png" class="card-img-top img-fluid" 
-                             alt="Zombie Makeup Kit" 
-                             style="max-height: 350px; object-fit: contain;">
-                        <div class="card-body text-center">
-                            <h6 class="card-title">Zombie Makeup Kit</h6>
-                            <p class="card-text">$40.00</p>
-                        </div>
-                    </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 col-sm-6 mb-4" data-price="20">
+            <div class="card h-100 border-0">
+                <img src="{{ asset('images/glasses.png') }}" class="card-img-top img-fluid" 
+                     alt="Retro Sunglasses" 
+                     style="max-height: 350px; object-fit: contain;">
+                <div class="card-body text-center">
+                    <h6 class="card-title">Retro Sunglasses</h6>
+                    <p class="card-text">$20.00</p>
                 </div>
-        
-                <div class="col-md-3 col-sm-6 mb-4" data-price="30">
-                    <div class="card h-100 border-0">
-                        <img src="/SuitUp/images/spider.png" class="card-img-top img-fluid" 
-                             alt="Giant Spider Prop" 
-                             style="max-height: 350px; object-fit: contain;">
-                        <div class="card-body text-center">
-                            <h6 class="card-title">Giant Spider Prop</h6>
-                            <p class="card-text">$30.00</p>
-                        </div>
-                    </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 col-sm-6 mb-4" data-price="40">
+            <div class="card h-100 border-0">
+                <img src="{{ asset('images/makeup.png') }}" class="card-img-top img-fluid" 
+                     alt="Zombie Makeup Kit" 
+                     style="max-height: 350px; object-fit: contain;">
+                <div class="card-body text-center">
+                    <h6 class="card-title">Zombie Makeup Kit</h6>
+                    <p class="card-text">$40.00</p>
                 </div>
-            </div> <!-- End of row for product cards -->
-        </div> <!-- End of product section -->
-    </div> <!-- End of main row -->
+            </div>
+        </div>
+
+        <div class="col-md-3 col-sm-6 mb-4" data-price="30">
+            <div class="card h-100 border-0">
+                <img src="{{ asset('images/spider.png') }}" class="card-img-top img-fluid" 
+                     alt="Giant Spider Prop" 
+                     style="max-height: 350px; object-fit: contain;">
+                <div class="card-body text-center">
+                    <h6 class="card-title">Giant Spider Prop</h6>
+                    <p class="card-text">$30.00</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 </div>
 <div class="row align-items-center text-center py-4 border-bottom"></div>
 
@@ -123,7 +119,7 @@
 
 
     priceRange.addEventListener("input", function() {
-        maxPrice.textContent = "$" + priceRange.value;
+        maxPrice.textContent = "₱" + priceRange.value;
         filterProducts();
     });
 
