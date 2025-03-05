@@ -1,0 +1,167 @@
+
+        html, body {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    flex: 1; /* Pushes the footer to the bottom */
+}
+
+        /* Promo Banner */
+        .promo-banner {
+            background: black;
+            color: white;
+            text-align: center;
+            padding: 5px;
+            font-size: 14px;
+        }
+        /* Navbar */
+        .navbar {
+            background: white;
+            border-bottom: 2px solid #ddd;
+            padding: 0; /* Remove default padding */
+        }
+
+        /* Remove left padding from the container-fluid */
+        .container-fluid {
+            padding-left: 0;
+        }
+        .navbar-brand {
+            background: #F4FF5F; /* Background color */
+            font-weight: bold;
+            padding: 15px 20px; /* Ensure full height coverage */
+            margin: 0; /* Remove margin */
+            display: block;
+        }
+        .navbar-nav {
+            margin: 0 auto;
+        }
+        .nav-item {
+            margin: 0 10px;
+        }
+        .nav-icons {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .nav-icons a {
+            font-size: 20px;
+            color: black;
+        }
+        /* Navbar Links */
+        .navbar-nav .nav-item {
+            position: relative;
+            padding: 0 15px; /* Add space around links */
+        }
+
+        /* Add lines between menu items */
+        .navbar-nav .nav-item:not(:last-child)::after {
+            content: "|"; /* Vertical line */
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            color: black; /* Line color */
+        }
+
+        /* Hero Section */
+        .hero-text {
+            text-align: center;
+            padding: 60px 0;
+        }
+        .hero-text h1 {
+            font-weight: 800;
+            font-size: 42px;
+            margin-bottom: 10px;
+        }
+        .highlight {
+            background: #F4FF5F;
+            padding: 7px 12px;
+            display: inline-block;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        /* Product Grid */
+        .product-grid {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            padding-bottom: 50px;
+        }
+        .product-grid img {
+            width: 100%;
+            height: auto;
+            max-width: 350px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+        .row {
+            margin: 0;
+            overflow: hidden;
+        }
+        .price-slider input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 70%;
+            height: 6px;
+            background: #ddd; /* Default track color */
+            outline: none;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        /* WebKit (Chrome, Safari) */
+        .price-slider input[type="range"]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(to right, #000000 0%, #000000 50%, #000000 50%);
+            border-radius: 10px;
+        }
+
+        /* Firefox */
+        .price-slider input[type="range"]::-moz-range-track {
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(to right, #000000 0%, #000000 50%, #000000 50%);
+            border-radius: 10px;
+        }
+
+        /* Thumb styling */
+        .price-slider input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 15px;
+            height: 18px;
+            border-radius: 50%;
+            background: black;
+            border: 2px solid #000000;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: -6px; /* Adjust to center */
+        }
+
+        /* Thumb Hover */
+        .price-slider input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+
+        /* Labels (Price values) */
+        .price-slider span {
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .card:hover {
+            transform: scale(0.98); /* Slightly shrink the card */
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* Add shadow */
+            transition: all 0.2s ease-in-out;
+        }
+
+        .card:active {
+            transform: scale(0.95); /* Further shrink when clicked */
+            box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.3);
+        }

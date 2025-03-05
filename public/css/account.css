@@ -1,0 +1,85 @@
+html, body {
+    overflow-x: hidden;
+}
+
+/* Promo Banner */
+.promo-banner {
+    background: black;
+    color: white;
+    text-align: center;
+    padding: 5px;
+    font-size: 14px;
+}
+
+/* Navbar */
+.navbar {
+    background: white;
+    border-bottom: 2px solid #ddd;
+    padding: 0;
+}
+.container-fluid {
+    padding-left: 0;
+}
+.navbar-brand {
+    background: #F4FF5F;
+    font-weight: bold;
+    padding: 15px 20px;
+    margin: 0;
+    display: block;
+}
+.navbar-nav {
+    margin: 0 auto;
+}
+.nav-item {
+    margin: 0 10px;
+}
+.nav-icons {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.nav-icons a {
+    font-size: 20px;
+    color: black;
+}
+.navbar-nav .nav-item {
+    position: relative;
+    padding: 0 15px;
+}
+.navbar-nav .nav-item:not(:last-child)::after {
+    content: "|";
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    color: black;
+}
+
+/* Account Section */
+.account-section {
+max-width: 800px;
+margin: 0 auto; /* Remove extra space */
+padding-bottom: 60px; /* Remove default padding */
+padding-top: 10px;
+}
+.account-section h2 {
+    font-weight: bold;
+}
+.account-banner {
+background: #0D0B17; /* Match dark theme */
+color: white;
+padding: 100px 60px 30px; /* Adjust padding to lower the content */
+text-align: left;
+display: flex;
+align-items: center; /* Aligns image and text */
+gap: 15px;
+width: 100%;
+margin: 0;
+position: relative;
+}
+
+.account-banner img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+}

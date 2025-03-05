@@ -1,103 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('layouts.headerfooter')
+
+@section('title', 'Home - T Shop')
+
+@section('content')
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ asset('css/bookingform.css') }}">
     <title>Booking Form</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f8f8f8;
-            margin: 0;
-            padding: 0;
-        }
-
-        header {
-            background-color: black;
-            padding: 10px;
-            text-align: center;
-        }
-
-        header img {
-            max-width: 100px;
-        }
-
-        h2, h3 {
-            text-align: center;
-            color: #333;
-        }
-
-        form {
-            width: 50%;
-            margin: 0 auto;
-            background-color: white;
-            padding: 20px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            border-radius: 5px;
-        }
-
-        label {
-            font-weight: bold;
-            display: block;
-            margin-top: 10px;
-        }
-
-        input, select, textarea {
-            width: 100%;
-            padding: 8px;
-            margin-top: 5px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-
-        textarea {
-            height: 80px;
-        }
-
-        button {
-            background-color: black;
-            color: white;
-            padding: 10px;
-            border: none;
-            cursor: pointer;
-            width: 48%;
-            margin-top: 15px;
-        }
-
-        button:hover {
-            background-color: #333;
-        }
-
-        footer {
-            background-color: black;
-            color: white;
-            text-align: center;
-            padding: 20px;
-            margin-top: 20px;
-        }
-
-        footer img {
-            max-width: 80px;
-            display: block;
-            margin: 0 auto;
-        }
-
-        footer nav a {
-            color: white;
-            text-decoration: none;
-            margin: 0 10px;
-        }
-
-        footer nav {
-            margin-top: 10px;
-        }
-    </style>
 </head>
 <body>
-    <header>
-        <img src="logo.png" alt="Logo">
-    </header>
-    
     <h2>Client Details</h2>
     <form action="/submit-booking" method="POST">
         <label>First Name *</label>
@@ -166,18 +79,5 @@
         <button type="submit">Book Now</button>
     </form>
     
-    <footer>
-        <img src="logo.png" alt="Logo">
-        <p>Tel: +63 945-298-5741</p>
-        <nav>
-            <a href="#">Shop</a>
-            <a href="#">About Us</a>
-            <a href="#">Subscribe</a>
-            <a href="#">FAQ</a>
-            <a href="#">Store Policy</a>
-            <a href="#">Shipping & Returns</a>
-            <a href="#">Payment Methods</a>
-        </nav>
-    </footer>
 </body>
-</html>
+@endsection
