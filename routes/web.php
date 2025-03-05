@@ -30,5 +30,6 @@ Route::get('/product/{id}', function ($id) {
     return "Product details for product ID: " . $id;
 })->name('product.show');
 
+Route::view('/admin/dashboard', 'admindashboard')->name('admin.dashboard');
 
 

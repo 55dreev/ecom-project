@@ -33,9 +33,9 @@
                 <h6>Price</h6>
                 <!-- Line above the price slider -->
                 <div class="price-slider">
-                    <span id="min-price">₱15</span>
-                    <input type="range" class="form-range" id="priceRange" min="15" max="100" step="1" value="50">
-                    <span id="max-price">₱100</span>
+                    <span id="min-price">₱100</span>
+                    <input type="range" class="form-range" id="priceRange" min="100" max="6000" step="1" value="100">
+                    <span id="max-price">₱6000</span>
                 </div>
                 <hr> <!-- Line below the price slider -->
         </div>
@@ -46,62 +46,62 @@
     <div class="row" id="productContainer">
         <h1 class="text-start mb-4 fw-bold">Latest Additions</h1>
         
-        <div class="col-md-3 col-sm-6 mb-4" data-price="75">
+        <div class="col-md-3 col-sm-6 mb-4" data-price="4000">
             <div class="card h-100 border-0">
                 <img src="{{ asset('images/gown.svg') }}" class="card-img-top img-fluid" 
                      alt="Classic Witch Costume" 
                      style="max-height: 350px; object-fit: contain;">
                 <div class="card-body text-center">
                     <h6 class="card-title">Classic Witch Costume</h6>
-                    <p class="card-text">$75.00</p>
+                    <p class="card-text">₱ 4,000.00</p>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-3 col-sm-6 mb-4" data-price="18">
+        <div class="col-md-3 col-sm-6 mb-4" data-price="800">
             <div class="card h-100 border-0">
                 <img src="{{ asset('images/glove.jpg') }}" class="card-img-top img-fluid" 
                      alt="Skeleton Gloves" 
                      style="max-height: 350px; object-fit: contain;">
                 <div class="card-body text-center">
                     <h6 class="card-title">Skeleton Gloves</h6>
-                    <p class="card-text">$18.00</p>
+                    <p class="card-text">₱ 800.00</p>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-3 col-sm-6 mb-4" data-price="20">
+        <div class="col-md-3 col-sm-6 mb-4" data-price="1000">
             <div class="card h-100 border-0">
                 <img src="{{ asset('images/glasses.png') }}" class="card-img-top img-fluid" 
                      alt="Retro Sunglasses" 
                      style="max-height: 350px; object-fit: contain;">
                 <div class="card-body text-center">
                     <h6 class="card-title">Retro Sunglasses</h6>
-                    <p class="card-text">$20.00</p>
+                    <p class="card-text">₱ 1,000.00</p>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-3 col-sm-6 mb-4" data-price="40">
+        <div class="col-md-3 col-sm-6 mb-4" data-price="2000">
             <div class="card h-100 border-0">
                 <img src="{{ asset('images/makeup.png') }}" class="card-img-top img-fluid" 
                      alt="Zombie Makeup Kit" 
                      style="max-height: 350px; object-fit: contain;">
                 <div class="card-body text-center">
                     <h6 class="card-title">Zombie Makeup Kit</h6>
-                    <p class="card-text">$40.00</p>
+                    <p class="card-text">₱ 2,000.00</p>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-3 col-sm-6 mb-4" data-price="30">
+        <div class="col-md-3 col-sm-6 mb-4" data-price="300">
             <div class="card h-100 border-0">
                 <img src="{{ asset('images/spider.png') }}" class="card-img-top img-fluid" 
                      alt="Giant Spider Prop" 
                      style="max-height: 350px; object-fit: contain;">
                 <div class="card-body text-center">
                     <h6 class="card-title">Giant Spider Prop</h6>
-                    <p class="card-text">$30.00</p>
+                    <p class="card-text">₱300.00</p>
                 </div>
             </div>
         </div>
