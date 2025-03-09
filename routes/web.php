@@ -48,4 +48,5 @@ Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store
 // ✅ Admin Routes
 Route::view('/admin-dashboard', 'admindashboard')->name('admin.dashboard');
 Route::view('/admin-products', 'adminproducts')->name('admin.products');
+Route::view('/admin-chat', 'adminchat')->name('admin.chat');
 
