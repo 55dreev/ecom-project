@@ -131,41 +131,59 @@ Features: Lightweight, durable, and perfect for themed parties, Halloween, and c
     </div>
 
     <h2 class="text-xl font-semibold mt-8">Customer Reviews</h2>
+    
+    <!-- Display Average Rating -->
+<div class="bg-white p-4 rounded-lg shadow-md mt-4 text-center">
+    <h2 class="text-xl font-semibold">Average Rating</h2>
 
+    @if(isset($averageRating) && $averageRating > 0)
+        <p class="text-yellow-500 text-2xl">
+            @for ($i = 1; $i <= 5; $i++)
+                @if($i <= round($averageRating))
+                    ★
+                @else
+                    ☆
+                @endif
+            @endfor
+            <span class="text-gray-600">({{ number_format($averageRating, 1) }}/5)</span>
+        </p>
+    @else
+        <p class="text-gray-600">No ratings yet.</p>
+    @endif
+</div>
 <!-- Display Existing Reviews -->
 <div class="bg-white p-4 rounded-lg shadow-md mt-4">
+    <h2 class="text-xl font-semibold mb-4">Customer Reviews</h2>
+
     @if(isset($reviews) && $reviews->count())
         @foreach ($reviews as $review)
             <div class="border-b pb-2 mb-2">
-                <p><strong>{{ $review->name }}</strong></p>
-                <p>{{ $review->comment }}</p>
+                <p><strong>{{ $review->name }}</strong> 
+                    <span class="text-gray-500 text-sm">({{ $review->created_at->format('M d, Y') }})</span>
+                </p>
+                
+                <!-- Display Star Rating -->
+                <p class="text-yellow-500">
+                    @for ($i = 1; $i <= 5; $i++)
+                        @if($i <= $review->rating)
+                            ★
+                        @else
+                            ☆
+                        @endif
+                    @endfor
+                    <span class="text-gray-500">({{ $review->rating }}/5)</span>
+                </p>
 
-                <!-- Reply Form -->
-                <button onclick="toggleReplyForm(@json($review->id))" class="text-blue-500 text-sm">Reply</button>  
-                <form action="{{ route('reviews.store') }}" method="POST" class="mt-2 hidden" id="reply-form-{{ $review->id }}">
-                    @csrf
-                    <input type="hidden" name="parent_id" value="{{ $review->id }}">
-                    <input type="text" name="name" placeholder="Your Name" class="w-full p-2 border rounded-md mb-2" required>
-                    <textarea name="comment" placeholder="Your Reply" class="w-full p-2 border rounded-md mb-2" required></textarea>
-                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md">Submit Reply</button>
-                </form>
-
-                <!-- Replies -->
-                @if($review->replies->count())
-                    <div class="ml-4 border-l pl-2 mt-2">
-                        @foreach ($review->replies as $reply)
-                            <p><strong>{{ $reply->name }}</strong>: {{ $reply->comment }}</p>
-                        @endforeach
-                    </div>
-                @endif
+                <p class="text-gray-700">{{ $review->comment }}</p>
             </div>
         @endforeach
     @else
-        <p>No reviews yet. Be the first to leave a review!</p>
+        <p class="text-gray-600">No reviews yet. Be the first to leave a review!</p>
     @endif
 </div>
 
-<!-- Review Form -->
+
+<!-- Review Submission Form -->
 <h3 class="text-lg font-semibold mt-6">Leave a Review</h3>
 <form action="{{ route('reviews.store') }}" method="POST" class="mt-4">
     @csrf
@@ -173,6 +191,19 @@ Features: Lightweight, durable, and perfect for themed parties, Halloween, and c
         <label class="block text-sm font-medium text-gray-600">Your Name</label>
         <input type="text" name="name" class="w-full p-2 border rounded-md" required>
     </div>
+
+    <div class="mt-2">
+        <label class="block text-sm font-medium text-gray-600">Your Rating</label>
+        <select name="rating" class="w-full p-2 border rounded-md" required>
+            <option value="5">⭐⭐⭐⭐⭐ - Excellent</option>
+            <option value="4">⭐⭐⭐⭐ - Very Good</option>
+            <option value="3">⭐⭐⭐ - Good</option>
+            <option value="2">⭐⭐ - Fair</option>
+            <option value="1">⭐ - Poor</option>
+            <option value="0">No Rating</option>
+        </select>
+    </div>
+
     <div class="mt-2">
         <label class="block text-sm font-medium text-gray-600">Your Review</label>
         <textarea name="comment" class="w-full p-2 border rounded-md" required></textarea>
@@ -180,7 +211,6 @@ Features: Lightweight, durable, and perfect for themed parties, Halloween, and c
     <input type="hidden" name="parent_id" value="">
     <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md mt-2">Submit Review</button>
 </form>
-
 <script>
     function toggleReplyForm(id) {
         let form = document.getElementById('reply-form-' + id);
@@ -189,6 +219,7 @@ Features: Lightweight, durable, and perfect for themed parties, Halloween, and c
         }
     }
 </script>
+
 
 
 </div>

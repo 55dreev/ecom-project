@@ -1,18 +1,14 @@
 <?php
-
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Review extends Model
 {
-    use HasFactory;
-
-    protected $fillable = ['name', 'comment', 'parent_id'];
+    protected $fillable = ['name', 'comment', 'parent_id', 'rating']; // ✅ Include rating
 
     public function replies()
     {
-        return $this->hasMany(Review::class, 'parent_id');
+        return $this->hasMany(Review::class, 'parent_id')->orderBy('created_at', 'asc');
     }
 }
