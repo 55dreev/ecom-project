@@ -6,7 +6,7 @@
         </button>
         <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
             <ul class="navbar-nav">
-                <li class="nav-item"><a class="nav-link" href="#">New</a></li>
+                <li class="nav-item"><a class="nav-link" href="categories">Costumes</a></li>
                 <li class="nav-item"><a class="nav-link" href="#">Women</a></li>
                 <li class="nav-item"><a class="nav-link" href="#">More</a></li>
             </ul>
