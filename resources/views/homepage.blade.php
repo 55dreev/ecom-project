@@ -21,7 +21,7 @@
 
 <!-- Product Grid -->
 <div class="container">
-        <div class="product-grid">
+    <div class="product-grid">
         <img src="{{ asset('images/girl.svg') }}" alt="Product 1" class="img-fluid">
         <img src="{{ asset('images/clothes.svg') }}" alt="Product 2" class="img-fluid">
         <img src="{{ asset('images/girl.svg') }}" alt="Product 3" class="img-fluid">
@@ -32,28 +32,15 @@
 <div class="container mt-5">
     <h2 class="text-center mb-4 fw-bold">Latest Additions</h2>
     <div class="row g-3">
-        @php
-            $products = [
-                ['id' => 1, 'name' => 'Classic Witch Costume', 'image' => 'gown.svg', 'price' => '75.00'],
-                ['id' => 2, 'name' => 'Skeleton Gloves', 'image' => 'glove.jpg', 'price' => '18.00'],
-                ['id' => 3, 'name' => 'Retro Sunglasses', 'image' => 'glasses.png', 'price' => '20.00'],
-                ['id' => 4, 'name' => 'Zombie Makeup Kit', 'image' => 'makeup.png', 'price' => '40.00'],
-                ['id' => 5, 'name' => 'Zombie Makeup Kit', 'image' => 'makeup.png', 'price' => '40.00'],
-                ['id' => 6, 'name' => 'Zombie Makeup Kit', 'image' => 'makeup.png', 'price' => '40.00'],
-                ['id' => 7, 'name' => 'Zombie Makeup Kit', 'image' => 'makeup.png', 'price' => '40.00'],
-                ['id' => 8, 'name' => 'Zombie Makeup Kit', 'image' => 'makeup.png', 'price' => '40.00'],
-            ];
-        @endphp
-
-        @foreach($products as $product)
+        @foreach($costumes as $costume)
             <div class="col-md-3">
                 <div class="card h-100 d-flex flex-column border-0">
-                    <a href="{{ route('product.show', ['id' => $product['id']]) }}">
-                        <img src="{{ asset('images/' . $product['image']) }}" class="card-img-top img-fluid" alt="{{ $product['name'] }}" style="height: 350px; object-fit: cover;">
+                    <a href="{{ route('product.show', ['id' => $costume->id]) }}">
+                        <img src="{{ asset($costume->image) }}" class="card-img-top img-fluid" alt="{{ $costume->name }}" style="height: 350px; object-fit: cover;">
                     </a>
                     <div class="card-body text-center flex-grow-1">
-                        <h6 class="card-title">{{ $product['name'] }}</h6>
-                        <p class="card-text">${{ $product['price'] }}</p>
+                        <h6 class="card-title">{{ $costume->name }}</h6>
+                        <p class="card-text">₱{{ number_format($costume->price, 2) }}</p>
                     </div>
                 </div>
             </div>
