@@ -32,7 +32,7 @@
 <div class="container mt-5">
     <h2 class="text-center mb-4 fw-bold">Latest Additions</h2>
     <div class="row g-3">
-        @foreach($costumes->take(4) as $costume)
+        @foreach($costumes as $costume)
             <div class="col-md-3">
                 <div class="card h-100 d-flex flex-column border-0">
                     <a href="{{ route('product.show', ['id' => $costume->id]) }}">
