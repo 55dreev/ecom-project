@@ -27,6 +27,12 @@ Route::view('/account', 'account')->name('account');
 Route::view('/cart', 'cart')->name('cart');
 Route::view('/categoriespage', 'categoriespage')->name('categoriespage');
 Route::view('/booking-form', 'bookingform')->name('bookingform');
+Route::view('/about', 'about')->name('about');
+Route::get('/info', function () {
+    return view('info');
+})->name('info');
+
+
 
 // ✅ Product & Categories
 Route::get('/categories', [CostumeController::class, 'index'])->name('categories');

@@ -1,19 +1,5 @@
-<footer class="mt-5">
-    <div class="container-fluid bg-light">
-        <div class="row align-items-stretch overflow-hidden">
-            <div class="col-md-6 text-center d-flex flex-column justify-content-center py-5" style="background: linear-gradient(to bottom, #ffffcc, #dfff00); min-height: 50vh;">
-                <h6 class="text-uppercase fw-light" style="font-size: 2rem;">Huge Costume Sale!</h6>
-                <h1 class="fw-bold" style="font-size: 7.5rem;">Up to</h1>
-                <h1 class="fw-bold" style="font-size: 7.5rem;">30% Off</h1>
-                <p>Enjoy up to 30% off on all costumes using code <strong>CoSTUME30</strong></p>
-            </div>
-            <div class="col-md-6 p-0">
-                <img src="{{ asset('images/promo.svg') }}" class="img-fluid w-100 object-fit-cover" alt="Promo Image" style="min-height: 50vh;">
-            </div>
-        </div>
-    </div>
-
-    <!-- Footer Links -->
+<footer>
+    <div class="row align-items-center text-center py-4 border-bottom w-100"></div>
     <div class="row text-gray">
         <div class="col-md-3 p-4 text-white text-center" style="background-color: black;">
             <h5>T SHOP</h5>
@@ -34,15 +20,15 @@
         </div>
         <div class="col-md-3 p-4">
             <h6 class="fw-bold">Our Store</h6>
-            <p>About Us</p>
+            <a class="nav-link" href="{{ route('about') }}"><p>About Us</p></a>
             <p>Subscribe</p>
-            <p>FAQ</p>
+            <a class="nav-link" href="{{ route('info') }}#faq"><p>FAQ</p></a>
         </div>
         <div class="col-md-3 p-4">
             <h6 class="fw-bold">Terms & Conditions</h6>
-            <p>Store Policy</p>
-            <p>Shipping & Returns</p>
-            <p>Payment Methods</p>
+            <a class="nav-link" href="{{ route('info') }}#store-policy"><p>Store Policy</p></a>
+            <a class="nav-link" href="{{ route('info') }}#shipping-returns"><p>Shipping & Returns</p></a>
+            <a class="nav-link" href="{{ route('info') }}#payment-methods"><p>Payment Methods</p></a>
         </div>
     </div>
 </footer>

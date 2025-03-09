@@ -19,6 +19,14 @@
     <div class="highlight">Find Your Perfect Costume</div>
 </div>
 
+<!-- Navigation Links -->
+<div class="container text-center my-4">
+    <a href="{{ route('categories') }}" class="btn btn-primary mx-2">View Categories</a>
+    <a href="{{ route('cart') }}" class="btn btn-secondary mx-2">Go to Cart</a>
+    <a href="{{ route('account') }}" class="btn btn-success mx-2">My Account</a>
+    <a href="{{ route('bookingform') }}" class="btn btn-warning mx-2">Book a Costume</a>
+</div>
+
 <!-- Product Grid -->
 <div class="container">
     <div class="product-grid">
