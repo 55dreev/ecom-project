@@ -7,13 +7,13 @@
         <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item"><a class="nav-link" href="categories">Costumes</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Women</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">About Us</a></li>
                 <li class="nav-item"><a class="nav-link" href="#">More</a></li>
             </ul>
         </div>
         <div class="nav-icons">
-            <a href="#"><i class="bi bi-person"></i></a>
-            <a href="#"><i class="bi bi-bag"></i></a>
+            <a href="account"><i class="bi bi-person"></i></a>
+            <a href="cart"><i class="bi bi-bag"></i></a>
         </div>
     </div>
 </nav>
