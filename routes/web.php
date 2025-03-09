@@ -2,11 +2,25 @@
 
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CostumeController;
+
+
+Route::get('/categories', [CostumeController::class, 'index'])->name('categories');
+
+Route::get('/test-db', function () {
+    try {
+        DB::connection()->getPdo();
+        return "Database connection is working!";
+    } catch (\Exception $e) {
+        return "Could not connect to the database. Error: " . $e->getMessage();
+    }
+});//see if database is working
 
 // Homepage route (first page users see, before login)
-Route::view('/', 'homepage')->name('homepage');  // Public homepage
+Route::view('/', 'welcome')->name('welcome');  // Public homepage
 
 
+Route::view('/homepage', 'homepage')->name('homepage');
 // Authentication Routes (for login and signup)
 Route::view('/login', 'login')->name('login');
 Route::view('/signup', 'signup')->name('signup');  // Signup page

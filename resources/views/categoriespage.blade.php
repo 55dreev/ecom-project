@@ -45,71 +45,28 @@
         <div class="col-md-9">
     <div class="row" id="productContainer">
         <h1 class="text-start mb-4 fw-bold">Latest Additions</h1>
-        
-        <div class="col-md-3 col-sm-6 mb-4" data-price="4000">
-            <div class="card h-100 border-0">
-                <img src="{{ asset('images/gown.svg') }}" class="card-img-top img-fluid" 
-                     alt="Classic Witch Costume" 
-                     style="max-height: 350px; object-fit: contain;">
-                <div class="card-body text-center">
-                    <h6 class="card-title">Classic Witch Costume</h6>
-                    <p class="card-text">₱ 4,000.00</p>
-                </div>
-            </div>
-        </div>
 
-        <div class="col-md-3 col-sm-6 mb-4" data-price="800">
-            <div class="card h-100 border-0">
-                <img src="{{ asset('images/glove.jpg') }}" class="card-img-top img-fluid" 
-                     alt="Skeleton Gloves" 
-                     style="max-height: 350px; object-fit: contain;">
-                <div class="card-body text-center">
-                    <h6 class="card-title">Skeleton Gloves</h6>
-                    <p class="card-text">₱ 800.00</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3 col-sm-6 mb-4" data-price="1000">
-            <div class="card h-100 border-0">
-                <img src="{{ asset('images/glasses.png') }}" class="card-img-top img-fluid" 
-                     alt="Retro Sunglasses" 
-                     style="max-height: 350px; object-fit: contain;">
-                <div class="card-body text-center">
-                    <h6 class="card-title">Retro Sunglasses</h6>
-                    <p class="card-text">₱ 1,000.00</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3 col-sm-6 mb-4" data-price="2000">
-            <div class="card h-100 border-0">
-                <img src="{{ asset('images/makeup.png') }}" class="card-img-top img-fluid" 
-                     alt="Zombie Makeup Kit" 
-                     style="max-height: 350px; object-fit: contain;">
-                <div class="card-body text-center">
-                    <h6 class="card-title">Zombie Makeup Kit</h6>
-                    <p class="card-text">₱ 2,000.00</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3 col-sm-6 mb-4" data-price="300">
-            <div class="card h-100 border-0">
-                <img src="{{ asset('images/spider.png') }}" class="card-img-top img-fluid" 
-                     alt="Giant Spider Prop" 
-                     style="max-height: 350px; object-fit: contain;">
-                <div class="card-body text-center">
-                    <h6 class="card-title">Giant Spider Prop</h6>
-                    <p class="card-text">₱300.00</p>
-                </div>
+        @foreach($costumes as $costume)
+    <div class="col-md-3 col-sm-6 mb-4" data-price="{{ $costume->price }}">
+        <div class="card h-100 border-0">
+            <img src="{{ asset($costume->image) }}" alt="{{ $costume->name }}" class="card-img-top img-fluid" 
+                 alt="{{ $costume->name }}" 
+                 style="max-height: 350px; object-fit: contain;">
+            <div class="card-body text-center">
+                <h6 class="card-title">{{ $costume->name }}</h6>
+                <p class="card-text">₱ {{ number_format($costume->price, 2) }}</p>
             </div>
         </div>
     </div>
+@endforeach
+    </div>
 </div>
 
+
 </div>
-<div class="row align-items-center text-center py-4 border-bottom"></div>
+
+
+
 
 <script>
     const priceRange = document.getElementById("priceRange");

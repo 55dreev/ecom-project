@@ -38,7 +38,7 @@
 
             <div class="mt-3 text-center">
                 <p>Don't have an account? <a href="/signup" class="link">Sign up</a></p>
-                <p><a href="{{ route('homepage') }}">Go back</a></p>
+                <p><a href="{{ route('welcome') }}">Go back</a></p>
 
             </div>
         </div>

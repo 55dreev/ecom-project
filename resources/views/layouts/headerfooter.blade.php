@@ -8,17 +8,23 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.2/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
 </head>
+<body>
 
-<div class="promo-banner text-center p-2 bg-warning">
+    <!-- Promo Banner -->
+    <div class="promo-banner text-center p-2 bg-warning">
         Sale is on! 25% off sitewide using TEE25 at checkout
-</div>
+    </div>
 
-  <!-- Navbar -->
-  @include('partials.navbar')
+    <!-- Navbar -->
+    @include('partials.navbar')
 
-<div class="container mt-4">
-    @yield('content')
-</div>
+    <div class="container-fluid bg-light mt-5 w-100">
+        @yield('content')
+    </div>
 
-<!-- Footer -->
-@include('partials.footer2')
+    <!-- Footer -->
+    @include('partials.footer2')
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
