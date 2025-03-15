@@ -12,8 +12,8 @@
             </ul>
         </div>
         <div class="nav-icons">
-            <a href="account"><i class="bi bi-person"></i></a>
-            <a href="cart"><i class="bi bi-bag"></i></a>
+            <a href="{{ route('account') }}"><i class="bi bi-person"></i></a>
+            <a href="{{ route('cart.view') }}"><i class="bi bi-bag"></i></a>
         </div>
     </div>
 </nav>

@@ -30,26 +30,32 @@
             <img src="{{ asset($costume->image) }}" alt="{{ $costume->name }}" class="card-img-top img-fluid w-100">
         </div>
 
-        <!-- Product Details -->
         <div>
-            <h1 class="text-2xl font-bold">{{ $costume->name }}</h1>
-            <p class="text-xl font-semibold mt-2">₱<span id="total-price">{{ number_format($costume->price, 2) }}</span></p>
+    <h1 class="text-2xl font-bold">{{ $costume->name }}</h1>
+    <p class="text-xl font-semibold mt-2">₱<span id="total-price">{{ number_format($costume->price, 2) }}</span></p>
 
-            <!-- Quantity and Rental Duration Selector -->
-            <form action="#" method="POST" class="mt-2">
-                <div class="flex items-center space-x-2">
-                    <div>
-                        <label for="quantity" class="block text-sm font-medium text-gray-600">Quantity</label>
-                        <input type="number" id="quantity" name="quantity" value="1" min="1" class="w-14 p-1 border rounded-md" oninput="updateTotalPrice()">
-                    </div>
-                    <div>
-                        <label for="days" class="block text-sm font-medium text-gray-600">Days to Rent</label>
-                        <input type="number" id="days" name="days" value="1" min="1" class="w-14 p-1 border rounded-md" oninput="updateTotalPrice()">
-                    </div>
-                </div>
+    <!-- Quantity and Rental Duration Selector -->
+    <form id="add-to-cart-form" action="{{ route('cart.add', ['id' => $costume->id]) }}" method="POST" class="mt-2">
+        @csrf
+        <div class="flex items-center space-x-2">
+            <div>
+                <label for="quantity" class="block text-sm font-medium text-gray-600">Quantity</label>
+                <input type="number" id="quantity" name="quantity" value="1" min="1" class="w-14 p-1 border rounded-md">
+            </div>
+            <div>
+                <label for="days" class="block text-sm font-medium text-gray-600">Days to Rent</label>
+                <input type="number" id="days" name="days" value="1" min="1" class="w-14 p-1 border rounded-md">
+            </div>
+        </div>
 
-                <button type="submit" class="bg-yellow-500 text-white px-3 py-1 rounded-md mt-2">Add to Cart</button>
-            </form>
+        <button type="submit" class="bg-yellow-500 text-white px-3 py-1 rounded-md mt-2">Add to Cart</button>
+    </form>
+
+
+            <!-- Notification Message -->
+<div id="cart-notification" class="hidden fixed top-5 right-5 bg-green-500 text-white px-4 py-2 rounded-md shadow-md">
+    Item added to cart!
+</div>
 
             <!-- Product Info -->
             <div class="mt-4">
@@ -151,13 +157,51 @@
             form.classList.toggle('hidden');
         }
     }
-    function updateTotalPrice() {
-        let pricePerDay = {{ $costume->price }};
-        let quantity = document.getElementById("quantity").value;
-        let days = document.getElementById("days").value;
-        let totalPrice = pricePerDay * quantity * days;
-        document.getElementById("total-price").innerText = totalPrice.toFixed(2);
-    }
+    document.addEventListener("DOMContentLoaded", function () {
+        const quantityInput = document.getElementById("quantity");
+        const daysInput = document.getElementById("days");
+        const totalPriceElement = document.getElementById("total-price");
+        const basePrice = {{ $costume->price }}; // Get price from backend
+
+        function updateTotalPrice() {
+            let quantity = parseInt(quantityInput.value) || 1;
+            let days = parseInt(daysInput.value) || 1;
+            let totalPrice = basePrice * quantity * days;
+            totalPriceElement.textContent = totalPrice.toFixed(2); // Update the displayed price
+        }
+
+        // Attach event listeners
+        quantityInput.addEventListener("input", updateTotalPrice);
+        daysInput.addEventListener("input", updateTotalPrice);
+    });
+    document.getElementById("add-to-cart-form").addEventListener("submit", function(event) {
+        event.preventDefault(); // Prevent default form submission
+
+        let form = event.target;
+        let formData = new FormData(form);
+
+        fetch(form.action, {
+            method: "POST",
+            body: formData,
+            headers: {
+                "X-Requested-With": "XMLHttpRequest", // Helps Laravel recognize it as an AJAX request
+                "X-CSRF-TOKEN": document.querySelector('input[name="_token"]').value // CSRF protection
+            }
+        })
+        .then(response => response.json()) // Expect a JSON response
+        .then(data => {
+            if (data.success) {
+                let notification = document.getElementById("cart-notification");
+                notification.classList.remove("hidden");
+
+                // Hide the notification after 3 seconds
+                setTimeout(() => {
+                    notification.classList.add("hidden");
+                }, 3000);
+            }
+        })
+        .catch(error => console.error("Error:", error));
+    });
 </script>
 </body>
 @endsection

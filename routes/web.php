@@ -5,7 +5,11 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\CostumeController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
-
+use App\Http\Controllers\CartController;
+// routes for cart adding, removing, etc..
+Route::post('/cart/add/{id}', [CartController::class, 'addToCart'])->name('cart.add');
+Route::get('/cart', [CartController::class, 'viewCart'])->name('cart.view');
+Route::delete('/cart/remove/{id}', [CartController::class, 'removeFromCart'])->name('cart.remove');
 // ✅ Home Route (Ensures 'welcome' route exists)
 
 Route::view('/', 'homepage')->name('homepage');
@@ -29,7 +33,6 @@ Route::view('/welcome', 'welcome')->name('welcome');
 Route::view('/login', 'login')->name('login');
 Route::view('/signup', 'signup')->name('signup');
 Route::view('/account', 'account')->name('account'); 
-Route::view('/cart', 'cart')->name('cart');
 Route::view('/categoriespage', 'categoriespage')->name('categoriespage');
 Route::view('/booking-form', 'bookingform')->name('bookingform');
 Route::view('/about', 'about')->name('about');
