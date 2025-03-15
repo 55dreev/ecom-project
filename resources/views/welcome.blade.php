@@ -1,5 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('layouts.headerfooter')
+
+@section('title', 'Product Info')
+
+@section('content')
+
 <head>
 <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,47 +17,9 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
 
     <!-- Custom CSS (Last to allow overrides) -->
-    <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
-
-    <script>
-        function updateTotalPrice() {
-            let pricePerDay = 150;
-            let quantity = document.getElementById("quantity").value;
-            let days = document.getElementById("days").value;
-            let totalPrice = pricePerDay * quantity * days;
-            document.getElementById("total-price").innerText = + totalPrice.toFixed(2);
-        }
-    </script>
+    <link rel="stylesheet" href="{{ asset('css/homepage.css') }}">
 </head>
 <body class="bg-gray-100">
-   <!-- Promo Banner -->
-<div class="promo-banner text-center p-2 bg-success text-white">
-    Dress to impress! Get 25% off all costume rentals—Use code TEE25 at checkout!
-</div>
-
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg">
-    <div class="container-fluid">
-    <div class="text-green-500 font-bold text-lg px-2 max-h-10 h-10 w-auto !max-h-10 m-0 drop-shadow-[0_0_2px_black]">
-    SUIT UP
-</div>
-
-<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
-            <ul class="navbar-nav">
-                <li class="nav-item"><a class="nav-link" href="#">New</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Women</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">More</a></li>
-            </ul>
-        </div>
-        <div class="nav-icons">
-            <a href="#"><i class="bi bi-person"></i></a>
-            <a href="#"><i class="bi bi-bag"></i></a>
-        </div>
-    </div>
-</nav>
 
 <div class="container mx-auto p-4">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white p-6 rounded-lg shadow-lg">
@@ -81,7 +47,6 @@
                 </div>
                 
                 <button type="submit" class="bg-yellow-500 text-white px-4 py-2 rounded-md mt-2">Add to Cart</button>
-                <button class="bg-black text-white px-4 py-2 rounded-md mt-2">Buy Now</button>
             </form>
             
             <!-- Product Info -->
@@ -218,10 +183,16 @@ Features: Lightweight, durable, and perfect for themed parties, Halloween, and c
             form.classList.toggle('hidden');
         }
     }
+
+    function updateTotalPrice() {
+            let pricePerDay = 150;
+            let quantity = document.getElementById("quantity").value;
+            let days = document.getElementById("days").value;
+            let totalPrice = pricePerDay * quantity * days;
+            document.getElementById("total-price").innerText = + totalPrice.toFixed(2);
+        }
 </script>
-
-
-
 </div>
 </body>
-</html>
+
+@endsection

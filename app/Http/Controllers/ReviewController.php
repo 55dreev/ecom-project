@@ -22,21 +22,21 @@ class ReviewController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'comment' => 'required|string',
-            'rating' => 'required|numeric|min:0|max:5', // ✅ Validate rating input (0 to 5)
-            'parent_id' => 'nullable|integer|exists:reviews,id',
-        ]);
+{
+    $request->validate([
+        'costume_id' => 'required|exists:costumes,id',
+        'name' => 'required|string|max:255',
+        'comment' => 'required|string',
+        'rating' => 'required|integer|min:1|max:5',
+    ]);
 
-        Review::create([
-            'name' => $request->name,
-            'comment' => $request->comment,
-            'rating' => $request->rating, // ✅ Save rating
-            'parent_id' => $request->parent_id,
-        ]);
+    Review::create([
+        'costume_id' => $request->costume_id,
+        'name' => $request->name,
+        'comment' => $request->comment,
+        'rating' => $request->rating,
+    ]);
 
-        return redirect()->back()->with('success', 'Review submitted successfully!');
-    }
+    return back()->with('success', 'Review added successfully!');
+}
 }

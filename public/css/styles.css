@@ -1,4 +1,7 @@
 
+html, body {
+    overflow-x: hidden;
+}
 /* Promo Banner */
         .promo-banner {
             background: black;

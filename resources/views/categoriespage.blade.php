@@ -49,16 +49,24 @@
         @foreach($costumes as $costume)
     <div class="col-md-3 col-sm-6 mb-4" data-price="{{ $costume->price }}">
         <div class="card h-100 border-0">
-            <img src="{{ asset($costume->image) }}" alt="{{ $costume->name }}" class="card-img-top img-fluid" 
-                 alt="{{ $costume->name }}" 
-                 style="max-height: 350px; object-fit: contain;">
+            <a href="{{ route('costume.show', $costume->id) }}">
+                <img src="{{ asset($costume->image) }}" alt="{{ $costume->name }}" class="card-img-top img-fluid" 
+                     style="max-height: 350px; object-fit: contain;">
+            </a>
             <div class="card-body text-center">
-                <h6 class="card-title">{{ $costume->name }}</h6>
+                <h6 class="card-title">
+                    <a href="{{ route('costume.show', $costume->id) }}" class="text-dark text-decoration-none">
+                        {{ $costume->name }}
+                    </a>
+                </h6>
                 <p class="card-text">₱ {{ number_format($costume->price, 2) }}</p>
             </div>
         </div>
     </div>
 @endforeach
+
+
+
     </div>
 </div>
 

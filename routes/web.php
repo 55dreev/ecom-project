@@ -7,8 +7,8 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
 
 // ✅ Home Route (Ensures 'welcome' route exists)
-Route::view('/', 'welcome')->name('welcome');
 
+Route::view('/', 'homepage')->name('homepage');
 // ✅ Test Database Connection
 Route::get('/test-db', function () {
     try {
@@ -19,8 +19,13 @@ Route::get('/test-db', function () {
     }
 });
 
+//route to get costumes to show
+Route::get('/costume/{id}', [CostumeController::class, 'show'])->name('costume.show');
+
+
 // ✅ Public Pages
 Route::view('/homepage', 'homepage')->name('homepage');
+Route::view('/welcome', 'welcome')->name('welcome');
 Route::view('/login', 'login')->name('login');
 Route::view('/signup', 'signup')->name('signup');
 Route::view('/account', 'account')->name('account'); 
@@ -49,7 +54,7 @@ Route::get('/logout', function () {
 })->name('logout');
 
 // ✅ Reviews
-Route::get('/', [ReviewController::class, 'index'])->name('welcome'); // ✅ Load welcome.blade.php with reviews
+//Route::get('/', [ReviewController::class, 'index'])->name('welcome'); // ✅ Load welcome.blade.php with reviews
 Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store'); // ✅ Store reviews
 // ✅ Admin Routes
 Route::view('/admin-dashboard', 'admindashboard')->name('admin.dashboard');
