@@ -9,7 +9,7 @@ use App\Http\Controllers\CartController;
 // routes for cart adding, removing, etc..
 Route::post('/cart/add/{id}', [CartController::class, 'addToCart'])->name('cart.add');
 Route::get('/cart', [CartController::class, 'viewCart'])->name('cart.view');
-Route::delete('/cart/remove/{id}', [CartController::class, 'removeFromCart'])->name('cart.remove');
+Route::post('/cart/remove/{id}', [CartController::class, 'removeFromCart'])->name('cart.remove');
 // ✅ Home Route (Ensures 'welcome' route exists)
 
 Route::view('/', 'homepage')->name('homepage');

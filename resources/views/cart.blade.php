@@ -9,7 +9,7 @@
         overflow-x: hidden;
     }
     .container-fluid, .cart-section {
-        flex: 1; /* Pushes the footer down */
+        flex: 1;
     }
     .promo-banner {
         background: black;
@@ -102,6 +102,9 @@
     .remove-btn {
         color: red;
         text-decoration: none;
+        background: none;
+        border: none;
+        cursor: pointer;
     }
     .checkout-btn {
         display: block;
@@ -125,9 +128,9 @@
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    @if(empty($cart) || count($cart) === 0)
+    @if($cartItems->isEmpty())
         <div class="cart-content">
-            <p>Cart is empty</p>
+            <p>Your cart is currently empty.</p>
             <a href="{{ route('categoriespage') }}" class="text-decoration-none">Continue Browsing</a>
         </div>
     @else
@@ -144,20 +147,21 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($cart as $id => $item)
+                @foreach($cartItems as $item)
                 <tr>
-                    <td><img src="{{ asset($item['image']) }}" alt="{{ $item['name'] }}"></td>
-                    <td>{{ $item['name'] }}</td>
-                    <td>₱{{ number_format($item['price'], 2) }}</td>
-                    <td>{{ $item['quantity'] }}</td>
-                    <td>{{ $item['days'] }}</td>
-                    <td>₱{{ number_format($item['total_price'], 2) }}</td>
+                    <td><img src="{{ asset($item->image) }}" alt="{{ $item->name }}"></td>
+                    <td>{{ $item->name }}</td>
+                    <td>₱{{ number_format($item->price, 2) }}</td>
+                    <td>{{ $item->quantity }}</td>
+                    <td>{{ $item->days }}</td>
+                    <td>₱{{ number_format($item->total_price, 2) }}</td>
                     <td>
-                        <form action="{{ route('cart.remove', ['id' => $id]) }}" method="POST">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="remove-btn">Remove</button>
-                        </form>
+                    <form action="{{ route('cart.remove', ['id' => $item->id]) }}" method="POST">
+                        @csrf
+                        <button type="submit" class="remove-btn" aria-label="Remove item">Remove</button>
+                    </form>
+
+
                     </td>
                 </tr>
                 @endforeach

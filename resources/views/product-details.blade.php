@@ -7,6 +7,8 @@
 <head>
 <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <title>Product Page</title>
     
     <!-- Bootstrap CSS (Load first) -->
@@ -36,7 +38,7 @@
 
     <!-- Quantity and Rental Duration Selector -->
     <form id="add-to-cart-form" action="{{ route('cart.add', ['id' => $costume->id]) }}" method="POST" class="mt-2">
-        @csrf
+    @csrf
         <div class="flex items-center space-x-2">
             <div>
                 <label for="quantity" class="block text-sm font-medium text-gray-600">Quantity</label>
@@ -49,7 +51,7 @@
         </div>
 
         <button type="submit" class="bg-yellow-500 text-white px-3 py-1 rounded-md mt-2">Add to Cart</button>
-    </form>
+</form>
 
 
             <!-- Notification Message -->
@@ -175,33 +177,47 @@
         daysInput.addEventListener("input", updateTotalPrice);
     });
     document.getElementById("add-to-cart-form").addEventListener("submit", function(event) {
-        event.preventDefault(); // Prevent default form submission
+    event.preventDefault(); // Prevent default form submission
 
-        let form = event.target;
-        let formData = new FormData(form);
+    let form = event.target;
+    let formData = new FormData(form);
 
-        fetch(form.action, {
-            method: "POST",
-            body: formData,
-            headers: {
-                "X-Requested-With": "XMLHttpRequest", // Helps Laravel recognize it as an AJAX request
-                "X-CSRF-TOKEN": document.querySelector('input[name="_token"]').value // CSRF protection
-            }
-        })
-        .then(response => response.json()) // Expect a JSON response
-        .then(data => {
-            if (data.success) {
-                let notification = document.getElementById("cart-notification");
-                notification.classList.remove("hidden");
+    fetch(form.action, {
+        method: "POST",
+        body: formData,
+        headers: {
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        let notification = document.getElementById("cart-notification");
 
-                // Hide the notification after 3 seconds
-                setTimeout(() => {
-                    notification.classList.add("hidden");
-                }, 3000);
-            }
-        })
-        .catch(error => console.error("Error:", error));
-    });
+        if (data.success) {
+            // Success message
+            notification.textContent = data.message; // "Item added to cart!"
+            notification.classList.remove("hidden");
+            notification.classList.remove("bg-red-500");
+            notification.classList.add("bg-green-500");
+        } else {
+            // Error message (item already in cart)
+            notification.textContent = data.message; // "Item already in cart!"
+            notification.classList.remove("hidden");
+            notification.classList.remove("bg-green-500");
+            notification.classList.add("bg-red-500");
+        }
+
+        // Hide notification after 3 seconds
+        setTimeout(() => {
+            notification.classList.add("hidden");
+        }, 3000);
+    })
+    .catch(error => console.error("Error:", error));
+});
+    
+
+
 </script>
 </body>
 @endsection
