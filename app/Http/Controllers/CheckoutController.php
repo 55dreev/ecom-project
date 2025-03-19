@@ -12,18 +12,17 @@ class CheckoutController extends Controller
 {
     // Show the checkout page
     public function showCheckout()
-{
-    $cartToken = Cookie::get('cart_token');
-
-    $cartItems = [];
-
-    if ($cartToken) {
-        $cartItems = Cart::where('cart_token', $cartToken)->get();
+    {
+        $cartToken = Cookie::get('cart_token');
+    
+        $cartItems = [];
+    
+        if ($cartToken) {
+            $cartItems = Cart::where('cart_token', $cartToken)->get();
+        }
+    
+        return view('bookingform', compact('cartItems')); // Changed 'checkout' to 'bookingform'
     }
-
-    return view('checkout', compact('cartItems'));
-}
-
     // Handle checkout form submission
     public function submitCheckout(Request $request)
     {
