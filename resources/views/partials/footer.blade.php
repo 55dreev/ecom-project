@@ -1,6 +1,15 @@
 <footer>
     <div class="row align-items-center text-center py-4 border-bottom w-100"></div>
     <div class="row text-gray">
+    <div class="col-md-6 text-center d-flex flex-column justify-content-center py-5" style="background: linear-gradient(to bottom, #ffffcc, #dfff00); min-height: 50vh;">
+                 <h6 class="text-uppercase fw-light" style="font-size: 2rem;">Huge Costume Sale!</h6>
+                 <h1 class="fw-bold" style="font-size: 7.5rem;">Up to</h1>
+                 <h1 class="fw-bold" style="font-size: 7.5rem;">30% Off</h1>
+                 <p>Enjoy up to 30% off on all costumes using code <strong>CoSTUME30</strong></p>
+             </div>
+             <div class="col-md-6 p-0">
+                 <img src="{{ asset('images/promo.svg') }}" class="img-fluid w-100 object-fit-cover" alt="Promo Image" style="min-height: 50vh;">
+             </div>
         <div class="col-md-3 p-4 text-white text-center" style="background-color: black;">
             <h5>T SHOP</h5>
             <p>info@mysite.com</p>

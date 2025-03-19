@@ -45,6 +45,11 @@
         <div class="col-md-9">
     <div class="row" id="productContainer">
         <h1 class="text-start mb-4 fw-bold">Latest Additions</h1>
+        @if(session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif
 
         @foreach($costumes as $costume)
     <div class="col-md-3 col-sm-6 mb-4" data-price="{{ $costume->price }}">

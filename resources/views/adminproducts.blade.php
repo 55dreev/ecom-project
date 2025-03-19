@@ -102,6 +102,8 @@
     </div>
 
     <div class="main-content">
+
+
         <h2 class="fw-bold">Add Product</h2>
         <ul class="nav nav-tabs">
             <li class="nav-item">
@@ -111,13 +113,10 @@
                 <a class="nav-link" data-bs-toggle="tab" href="#advanced">Advanced</a>
             </li>
         </ul>
-        <div class="tab-content p-4 card mt-3">
-            <div class="tab-pane fade show active" id="general">
-            <form enctype="multipart/form-data">
-    <div class="row">
+        <!-- <div class="row">
         <div class="col-md-6">
             <label class="form-label fw-bold">Categories *</label>
-            <select class="form-control">
+            <select name="category" class="form-control" required>
                 <option selected disabled>Select an option</option>
                 <option value="suits">Suits</option>
                 <option value="shirts">Shirts</option>
@@ -128,7 +127,7 @@
 
         <div class="col-md-6">
             <label class="form-label fw-bold">Size *</label>
-            <select class="form-control">
+            <select name="size" class="form-control" required>
                 <option selected disabled>Select the size</option>
                 <option value="S">Small</option>
                 <option value="M">Medium</option>
@@ -137,34 +136,42 @@
             </select>
             <small class="text-muted">Select the size</small>
         </div>
-    </div>
+    </div> -->
+        <div class="tab-content p-4 card mt-3">
+            <div class="tab-pane fade show active" id="general">
+            <form id="product-form" action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
+    @csrf
 
-    <div class="mb-3 mt-3">
-        <label class="form-label fw-bold">Product Name *</label>
-        <input type="text" class="form-control" placeholder="Product Name">
+    <div class="mb-3">
+        <label class="form-label fw-bold">Costume Name *</label>
+        <input type="text" name="name" class="form-control" placeholder="Costume Name" required>
     </div>
 
     <div class="mb-3">
-        <label class="form-label fw-bold">Daily Rental Rate *</label>
-        <input type="text" class="form-control" placeholder="Renting Value">
+        <label class="form-label fw-bold">Price *</label>
+        <input type="number" name="price" class="form-control" placeholder="Price" required>
     </div>
 
     <div class="mb-3">
         <label class="form-label fw-bold">Description *</label>
-        <textarea class="form-control" rows="4"></textarea>
+        <textarea name="description" class="form-control" rows="4" required></textarea>
     </div>
 
     <div class="mb-3">
-        <label class="form-label fw-bold">Upload Product Image *</label>
-        <input type="file" class="form-control" id="productImage" accept="image/*" onchange="previewImage(event)">
-        <small class="text-muted">Choose an image file (JPG, PNG, GIF).</small>
-        <div class="mt-3">
-            <img id="imagePreview" src="#" alt="Preview" class="img-fluid d-none" style="max-height: 200px; border-radius: 8px;">
-        </div>
+        <label class="form-label fw-bold">Upload Image *</label>
+        <input type="file" name="image" class="form-control" accept="image/*" required>
     </div>
 
-    <button class="btn btn-primary">Save Product</button>
+    <button type="submit" class="btn btn-primary">Save Costume</button>
+
+    <!-- Notification area -->
+    <div id="notification" class="alert alert-success mt-3 d-none" role="alert">
+        Costume saved successfully!
+    </div>
 </form>
+
+
+
 
             </div>
             <div class="tab-pane fade" id="advanced">
@@ -190,6 +197,43 @@
             reader.readAsDataURL(input.files[0]);
         }
     }
+    document.getElementById('product-form').addEventListener('submit', async function(event) {
+        event.preventDefault();
+
+        const formData = new FormData(this);
+
+        try {
+            const response = await fetch(this.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                console.log(result);
+
+                // Show notification
+                const notification = document.getElementById('notification');
+                notification.classList.remove('d-none');
+                notification.textContent = result.message;
+                setTimeout(() => {
+    notification.classList.add('hidden');
+}, 3000);  // Hide after 3 seconds
+
+                // Clear form fields
+                this.reset();
+            } else {
+                console.error('Failed to save costume.');
+                alert('Failed to save costume.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred.');
+        }
+    });
 </script>
 </body>
 </html>
