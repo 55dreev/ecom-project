@@ -169,14 +169,44 @@
         Costume saved successfully!
     </div>
 </form>
+</div>
+<div class="tab-pane fade" id="advanced">
+    <h4 class="fw-bold mb-3">Manage Costumes</h4>
 
+    <!-- Table for displaying products -->
+    <table class="table table-bordered">
+        <thead class="table-light">
+            <tr>
+                <th>Image</th>
+                <th>Item</th>
+                <th>Price</th>
+                <th>Remove</th>
+            </tr>
+        </thead>
+        <tbody id="costume-table-body">
+            @foreach($costumes as $costume)
+                <tr id="costume-{{ $costume->id }}">
+                    <td>
+                        <img src="{{ asset($costume->image) }}" alt="{{ $costume->name }}" width="80" height="80">
+                    </td>
+                    <td>{{ $costume->name }}</td>
+                    <td>₱{{ number_format($costume->price, 2) }}</td>
+                    <td>
+                        <button 
+                            class="btn btn-danger btn-sm delete-costume" 
+                            data-id="{{ $costume->id }}">
+                            Remove
+                        </button>
+                    </td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
 
+    <!-- Notification -->
+    <div id="notification" class="alert d-none mt-3"></div>
+</div>
 
-
-            </div>
-            <div class="tab-pane fade" id="advanced">
-                <p>Advanced settings will go here...</p>
-            </div>
         </div>
     </div>
 </div>
@@ -232,6 +262,88 @@
         } catch (error) {
             console.error('Error:', error);
             alert('An error occurred.');
+        }
+    });
+    document.addEventListener('DOMContentLoaded', () => {
+        const deleteForm = document.getElementById('delete-form');
+        
+        deleteForm.addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevent the default form submission
+
+            let formData = new FormData(this);
+
+            fetch(this.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Show success notification
+                    const notification = document.getElementById('notification');
+                    notification.textContent = data.message;
+                    notification.classList.remove('d-none');
+                    notification.classList.add('alert-success');
+                    setTimeout(() => {
+    notification.classList.add('hidden');
+}, 3000);
+                    // Remove the deleted item from the page
+                    const imageName = formData.get('image').name;
+                    const itemRow = document.querySelector(`[data-image="${imageName}"]`);
+                    if (itemRow) {
+                        itemRow.remove();
+                    }
+                } else {
+                    alert(data.message);  // Show error message
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    });
+    document.addEventListener('DOMContentLoaded', () => {
+        const deleteButtons = document.querySelectorAll('.delete-costume');
+
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                const costumeId = this.getAttribute('data-id');
+
+                if (!confirm('Are you sure you want to delete this costume?')) return;
+
+                fetch(`/admin/products/delete/${costumeId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.querySelector(`#costume-${costumeId}`).remove();
+                        showNotification('Costume deleted successfully!', 'success');
+                    } else {
+                        showNotification('Failed to delete costume.', 'danger');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showNotification('An error occurred.', 'danger');
+                });
+            });
+        });
+
+        function showNotification(message, type) {
+            const notification = document.getElementById('notification');
+            notification.classList.remove('d-none', 'alert-success', 'alert-danger');
+            notification.classList.add(`alert-${type}`);
+            notification.textContent = message;
+
+            setTimeout(() => {
+                notification.classList.add('d-none');
+            }, 3000);
         }
     });
 </script>
