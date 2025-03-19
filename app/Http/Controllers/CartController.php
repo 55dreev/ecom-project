@@ -13,16 +13,23 @@ class CartController extends Controller
     public function addToCart(Request $request, $id)
 {
     $costume = Costume::findOrFail($id);
-
+    $userId = auth()->id();
+    
     if (!Session::has('cart_token')) {
         Session::put('cart_token', Str::uuid()->toString());
     }
     $cartToken = Session::get('cart_token');
 
-    // Check if item already exists in cart
+    // Check if item exists in the cart for this user or session
     $existingItem = DB::table('carts')
-        ->where('cart_token', $cartToken)
-        ->where('costume_id', $id)
+        ->where(function ($query) use ($userId, $cartToken, $id) {
+            if ($userId) {
+                $query->where('user_id', $userId);
+            } else {
+                $query->where('cart_token', $cartToken);
+            }
+            $query->where('costume_id', $id);
+        })
         ->first();
 
     if ($existingItem) {
@@ -32,14 +39,11 @@ class CartController extends Controller
         return redirect()->route('cart.view')->with('error', 'Item already in cart!');
     }
 
-    // Debugging - Check if token is generated
-    \Log::info('Cart Token: ' . $cartToken);
-
-    // Insert
+    // Insert new item into cart
     DB::table('carts')->insert([
         'cart_token' => $cartToken,
+        'user_id' => $userId, // Associate cart with logged-in user
         'costume_id' => $id,
-        'user_id' => auth()->id() ?? null, // if you're not using authentication, set to null
         'unit_price' => $costume->price,
         'quantity' => $request->input('quantity', 1),
         'days' => $request->input('days', 1),
@@ -48,8 +52,6 @@ class CartController extends Controller
         'updated_at' => now(),
     ]);
 
-    \Log::info('Inserted to cart: Costume ID ' . $id);
-
     if ($request->ajax()) {
         return response()->json(['success' => true, 'message' => 'Item added to cart!']);
     }
@@ -57,24 +59,32 @@ class CartController extends Controller
     return redirect()->route('cart.view')->with('success', 'Item added to cart!');
 }
 
-
     public function viewCart()
-    {
-        $cartToken = Session::get('cart_token');
+{
+    $userId = auth()->id(); // Get logged-in user ID
+    $cartToken = Session::get('cart_token');
 
-        $cartItems = DB::table('carts')
-            ->join('costumes', 'carts.costume_id', '=', 'costumes.id')
-            ->where('cart_token', $cartToken)
-            ->select('carts.*', 'costumes.name', 'costumes.price', 'costumes.image')
-            ->get();
+    // If no user is logged in, fallback to session-based cart
+    $cartItems = DB::table('carts')
+        ->join('costumes', 'carts.costume_id', '=', 'costumes.id')
+        ->where(function ($query) use ($cartToken, $userId) {
+            if ($userId) {
+                $query->where('carts.user_id', $userId);
+            } else {
+                $query->where('carts.cart_token', $cartToken);
+            }
+        })
+        ->select('carts.id', 'carts.quantity', 'carts.days', 'carts.total_price', 
+                 'costumes.name', 'costumes.price', 'costumes.image')
+        ->get();
 
-        return view('cart', compact('cartItems'));
-    }
+    return view('cart', compact('cartItems'));
+}
+
 
     public function removeFromCart($id)
     {
         DB::table('carts')->where('id', $id)->delete();
-
         return redirect()->route('cart.view')->with('success', 'Item removed from cart!');
     }
 }

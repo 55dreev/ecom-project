@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AccountController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\CostumeController;
 use Illuminate\Support\Facades\Route;
@@ -32,7 +33,6 @@ Route::view('/homepage', 'homepage')->name('homepage');
 Route::view('/welcome', 'welcome')->name('welcome');
 Route::view('/login', 'login')->name('login');
 Route::view('/signup', 'signup')->name('signup');
-Route::view('/account', 'account')->name('account'); 
 Route::view('/categoriespage', 'categoriespage')->name('categoriespage');
 Route::view('/booking-form', 'bookingform')->name('bookingform');
 Route::view('/about', 'about')->name('about');
@@ -49,12 +49,10 @@ Route::get('/product/{id}', function ($id) {
 })->name('product.show');
 
 // ✅ Authentication Routes
-Route::post('/signup', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
-Route::get('/logout', function () {
-    session()->forget('username');
-    return redirect('/');
-})->name('logout');
+Route::post('/signup', [AuthController::class, 'register'])->name('signup');
+Route::post('/login', [AuthController::class, 'login'])->name('login');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::get('/account', [AccountController::class, 'index'])->name('account')->middleware('auth');
 
 // ✅ Reviews
 //Route::get('/', [ReviewController::class, 'index'])->name('welcome'); // ✅ Load welcome.blade.php with reviews

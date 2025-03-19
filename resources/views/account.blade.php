@@ -18,7 +18,7 @@
     <div class="account-section">
         <div class="account-banner">
             <img src="/SuitUp/images/spider.png" alt="Profile">
-            <h3>Karl Arman De Vera</h3>
+            <h3>{{ $user->name ?? 'Guest' }}</h3>  {{-- Display user name --}}
         </div>
         <nav class="nav">
             <a class="nav-link active" href="#">My Addresses</a>
@@ -36,21 +36,22 @@
             <div class="row mb-3">
                 <div class="col">
                     <label class="form-label">First name</label>
-                    <input type="text" class="form-control" value="Karl Arman">
+                    <input type="text" class="form-control" value="{{ explode(' ', $user->name)[0] }}" disabled>
                 </div>
                 <div class="col">
                     <label class="form-label">Last name</label>
-                    <input type="text" class="form-control" value="De Vera">
+                    <input type="text" class="form-control" value="{{ explode(' ', $user->name)[1] ?? '' }}" disabled>
                 </div>
             </div>
             <div class="mb-3">
                 <label class="form-label">Phone</label>
-                <input type="text" class="form-control">
+                <input type="text" class="form-control" value="{{ $user->phone ?? '' }}">
             </div>
 
             <h5>Login Info</h5>
-            <p><strong>Login email:</strong> ksat2022-891-72421@bicol-u.edu.ph</p>
+            <p><strong>Login email:</strong> {{ $user->email }}</p> {{-- Fetch email from database --}}
             <p><strong>Password:</strong> ••••••••</p>
+
             <button type="button" class="btn btn-outline-dark">Discard</button>
             <button type="submit" class="btn btn-dark">Update Info</button>
         </form>

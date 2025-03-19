@@ -24,10 +24,10 @@ class ReviewController extends Controller
     public function store(Request $request)
 {
     $request->validate([
-        'costume_id' => 'required|exists:costumes,id',
-        'name' => 'required|string|max:255',
-        'comment' => 'required|string',
+        'name' => 'required|string',
         'rating' => 'required|integer|min:1|max:5',
+        'comment' => 'required|string',
+        'costume_id' => 'required|exists:costumes,id'
     ]);
 
     Review::create([

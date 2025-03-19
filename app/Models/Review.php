@@ -13,7 +13,7 @@ class Review extends Model
     // Relationship: A review belongs to a costume
     public function costume()
     {
-        return $this->belongsTo(Costume::class);
+        return $this->belongsTo(Costume::class, 'costume_id');
     }
     public function replies()
     {

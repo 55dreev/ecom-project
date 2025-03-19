@@ -6,28 +6,22 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up()
     {
         Schema::create('reviews', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('costume_id'); // Foreign key to costumes table
-            $table->string('name'); // Customer's name
-            $table->text('comment'); // Comment text
-            $table->unsignedBigInteger('parent_id')->nullable(); // For replies
-            $table->integer('rating');
+            $table->string('name');
+            $table->text('comment');
+            $table->unsignedBigInteger('costume_id'); // Add costume_id column
+            $table->foreign('costume_id')->references('id')->on('costumes')->onDelete('cascade'); // Foreign key
+            $table->foreignId('parent_id')->nullable()->constrained('reviews')->onDelete('cascade'); // Replies
+            $table->integer('rating')->default(0); 
             $table->timestamps();
-    
-            $table->foreign('costume_id')->references('id')->on('costumes')->onDelete('cascade');
-            $table->foreign('parent_id')->references('id')->on('reviews')->onDelete('cascade');
         });
-        
     }
+
     public function down()
     {
         Schema::dropIfExists('reviews');
     }
-    
 };
