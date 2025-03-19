@@ -55,6 +55,8 @@ Route::view('/signup', 'signup')->name('signup');
 Route::view('/categoriespage', 'categoriespage')->name('categoriespage');
 Route::view('/about', 'about')->name('about');
 Route::view('/info', 'info')->name('info');
+Route::get('/product/{id}', [CostumeController::class, 'show'])->name('product.show');
+
 
 // ✅ Reviews
 Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
