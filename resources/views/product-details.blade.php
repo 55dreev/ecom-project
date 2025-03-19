@@ -14,18 +14,50 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
-
+    
     <!-- Tailwind CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ asset('css/homepage.css') }}">
+
+    <style>
+        /* Notification styling */
+        #notification-container {
+            position: absolute; /* Use relative instead of fixed */
+            width: 100%;
+            transform: translateY(-30px);
+            z-index: 10;
+        }
+
+        #notification {
+            background-color: #f87171; /* Red color */
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto;
+            display: none; /* Hide initially */
+        }
+    </style>
 </head>
 
 <body class="bg-gray-100">
 
+<!-- Notification Container (placed directly below navbar) -->
+<div id="notification-container">
+    <div id="notification" class="hidden">
+        Item added to cart successfully!
+    </div>
+</div>
+
+<!-- Main Content -->
 <div class="max-w-4xl mx-auto p-4">
+    
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white p-6 rounded-lg shadow-lg">
+        
         <!-- Product Image -->
         <div>
             <img src="{{ asset($costume->image) }}" alt="{{ $costume->name }}" class="card-img-top img-fluid w-100">
@@ -36,7 +68,7 @@
             <h1 class="text-2xl font-bold">{{ $costume->name }}</h1>
             <p class="text-xl font-semibold mt-2">₱<span id="total-price">{{ number_format($costume->price, 2) }}</span></p>
 
-            <!-- Quantity and Rental Duration Selector -->
+            <!-- Form -->
             <form id="add-to-cart-form" action="{{ route('cart.add', ['id' => $costume->id]) }}" method="POST" class="mt-2">
                 @csrf
                 <div class="flex items-center space-x-2">
@@ -51,18 +83,18 @@
                 </div>
 
                 <button type="submit" class="bg-yellow-500 text-white px-3 py-1 rounded-md mt-2">Add to Cart</button>
+                
             </form>
-
-            <!-- Product Info -->
-            <div class="mt-4">
-                <h2 class="text-lg font-semibold">Product Info</h2>
-                <p class="text-gray-600">{{ $costume->description }}</p>
-            </div>
-        </div>
+            <!-- ✅ Add the missing product description -->
+    <div class="mt-4">
+        <h2 class="text-lg font-semibold">Product Info</h2>
+        <p class="text-gray-600">{{ $costume->description }}</p>
     </div>
 </div>
 
-<div class="max-w-8xl mx-auto p-6">
+        </div>
+    </div>
+    <div class="max-w-8xl mx-auto p-6">
     <h2 class="text-xl font-semibold mt-8">Customer Reviews</h2>
 
     <!-- Display Average Rating -->
@@ -162,6 +194,57 @@
         @endauth
     </div>
 </div>
+</div>
+
+<script>
+    document.getElementById('add-to-cart-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const form = this;
+        const formData = new FormData(form);
+
+        try {
+            const response = await fetch(form.action, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: formData
+            });
+
+            const data = await response.json();
+            const notification = document.getElementById('notification');
+
+            if (response.ok && data.success) {
+                notification.textContent = 'Item added to cart successfully!';
+                notification.style.backgroundColor = '#4CAF50'; // Green for success
+            } else {
+                notification.textContent = data.message || 'Failed to add item to cart!';
+                notification.style.backgroundColor = '#f87171'; // Red for error
+            }
+
+            // Show notification
+            notification.style.display = 'block';
+
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        } catch (error) {
+            console.error('Error:', error);
+            
+            const notification = document.getElementById('notification');
+            notification.textContent = 'Failed due to network error.';
+            notification.style.backgroundColor = '#f87171';
+            notification.style.display = 'block';
+
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+    });
+</script>
 
 </body>
 @endsection

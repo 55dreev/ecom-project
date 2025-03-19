@@ -14,13 +14,12 @@ class CartController extends Controller
 {
     $costume = Costume::findOrFail($id);
     $userId = auth()->id();
-    
+
     if (!Session::has('cart_token')) {
         Session::put('cart_token', Str::uuid()->toString());
     }
     $cartToken = Session::get('cart_token');
 
-    // Check if item exists in the cart for this user or session
     $existingItem = DB::table('carts')
         ->where(function ($query) use ($userId, $cartToken, $id) {
             if ($userId) {
@@ -33,16 +32,12 @@ class CartController extends Controller
         ->first();
 
     if ($existingItem) {
-        if ($request->ajax()) {
-            return response()->json(['success' => false, 'message' => 'Item already in cart!']);
-        }
-        return redirect()->route('cart.view')->with('error', 'Item already in cart!');
+        return response()->json(['success' => false, 'message' => 'Item already in cart!'], 409); 
     }
 
-    // Insert new item into cart
     DB::table('carts')->insert([
         'cart_token' => $cartToken,
-        'user_id' => $userId, // Associate cart with logged-in user
+        'user_id' => $userId,
         'costume_id' => $id,
         'unit_price' => $costume->price,
         'quantity' => $request->input('quantity', 1),
@@ -52,12 +47,9 @@ class CartController extends Controller
         'updated_at' => now(),
     ]);
 
-    if ($request->ajax()) {
-        return response()->json(['success' => true, 'message' => 'Item added to cart!']);
-    }
-
-    return redirect()->route('cart.view')->with('success', 'Item added to cart!');
+    return response()->json(['success' => true, 'message' => 'Item added to cart!'], 201);
 }
+  
 
     public function viewCart()
 {
