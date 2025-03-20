@@ -22,7 +22,7 @@
                 <i class="bi bi-bag"></i>
                 <span id="cart-count" 
                       class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-                      style="font-size: 12px; min-width: 18px;">
+                      style="font-size: 12px; min-width: 20px;">
                     {{ session('cart_count', 0) }}
                 </span>
             </a>

@@ -6,9 +6,15 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\CostumeController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\OrdersController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+
+Route::get('/cart/count', [CartController::class, 'getCartCountAjax'])->name('cart.count.ajax');
+
+Route::get('/orders', [OrdersController::class, 'index'])->name('orders.view');
 
 // ✅ Home Route
 Route::view('/', 'homepage')->name('homepage');
@@ -41,14 +47,13 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/account', [AccountController::class, 'index'])->name('account')->middleware('auth');
 
 // ✅ Checkout Routes
-Route::middleware(['web'])->group(function () {
-    Route::get('/bookingform', [CheckoutController::class, 'showCheckout'])->name('bookingform');
-    Route::post('/submit-bookingform', [CheckoutController::class, 'submitCheckout'])->name('submit.bookingform');
-});
+Route::post('/checkout', [CheckoutController::class, 'checkout'])->name('checkout');
+Route::get('/payment-redirect', [CheckoutController::class, 'redirectToHome'])->name('payment.redirect');
 
 
 // ✅ Public Pages
 Route::view('/homepage', 'homepage')->name('homepage');
+Route::view('/bookingform', 'bookingform')->name('bookingform');
 Route::view('/welcome', 'welcome')->name('welcome');
 Route::view('/login', 'login')->name('login');
 Route::view('/signup', 'signup')->name('signup');
@@ -56,7 +61,6 @@ Route::view('/categoriespage', 'categoriespage')->name('categoriespage');
 Route::view('/about', 'about')->name('about');
 Route::view('/info', 'info')->name('info');
 Route::get('/product/{id}', [CostumeController::class, 'show'])->name('product.show');
-
 
 // ✅ Reviews
 Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');

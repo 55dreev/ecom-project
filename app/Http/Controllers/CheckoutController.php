@@ -3,92 +3,85 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Cart;
+use Illuminate\Support\Facades\Http;
 use App\Models\Order;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Cookie;
+
 class CheckoutController extends Controller
 {
-    // Show the checkout page
-    public function showCheckout()
+    public function checkout(Request $request)
     {
-        $cartToken = Cookie::get('cart_token');
-    
-        $cartItems = [];
-    
-        if ($cartToken) {
-            $cartItems = Cart::where('cart_token', $cartToken)->get();
-        }
-    
-        return view('bookingform', compact('cartItems')); // Changed 'checkout' to 'bookingform'
-    }
-    // Handle checkout form submission
-    public function submitCheckout(Request $request)
-    {
-        // Validate form inputs
-        $validated = $request->validate([
-            'first_name' => 'required|string',
-            'last_name' => 'required|string',
-            'email' => 'required|email',
-            'phone' => 'nullable|string',
-            'region' => 'required|string',
-            'address' => 'required|string',
-            'city' => 'required|string',
-            'zip_code' => 'required|string',
-            'payment_method' => 'required|string',
-            'total_amount' => 'required|numeric',
+        $userId = Auth::id();
+        $grandTotal = $request->input('grand_total');
+
+        // ✅ 1. Create the PayMongo checkout link
+        $response = Http::withHeaders([
+            'accept' => 'application/json',
+            'authorization' => 'Basic ' . base64_encode('sk_test_hVjhiCTews4tHb5BHXikwdiA'), // Replace with your secret key
+            'content-type' => 'application/json',
+        ])->post('https://api.paymongo.com/v1/links', [
+            'data' => [
+                'attributes' => [
+                    'amount' => (int)($grandTotal * 100), // Convert PHP to cents
+                    'description' => 'T Shop Checkout',
+                    'remarks' => 'Order Payment',
+                    'currency' => 'PHP',
+                ],
+            ],
         ]);
 
-        $cartToken = Cookie::get('cart_token');
-    if (!$cartToken) {
-        return redirect()->back()->with('error', 'Your cart is empty.');
-    }
+        if ($response->successful()) {
+            $paymongoLink = $response->json()['data']['attributes']['checkout_url'];
 
-    $cartItems = Cart::where('cart_token', $cartToken)->get();
+            // ✅ 2. Retrieve complete cart items with costume details
+            $cartItems = DB::table('carts')
+                ->join('costumes', 'carts.costume_id', '=', 'costumes.id')
+                ->where('carts.user_id', $userId)
+                ->select(
+                    'carts.quantity',
+                    'carts.days',
+                    'carts.total_price',
+                    'costumes.name',
+                    'costumes.image',
+                    'costumes.price'
+                )
+                ->get();
 
-    if ($cartItems->isEmpty()) {
-        return redirect()->back()->with('error', 'Your cart is empty.');
-    }
+            if ($cartItems->isEmpty()) {
+                return response()->json(['success' => false, 'message' => 'Your cart is empty.'], 400);
+            }
 
-        // Store order details (create Order model first)
-        DB::beginTransaction();
-        try {
+            // ✅ 3. Store the order in the database with full item details
             $order = new Order();
-            $order->user_id = null;
-            $order->first_name = $validated['first_name'];
-            $order->last_name = $validated['last_name'];
-            $order->email = $validated['email'];
-            $order->phone = $validated['phone'];
-            $order->region = $validated['region'];
-            $order->address = $validated['address'];
-            $order->city = $validated['city'];
-            $order->zip_code = $validated['zip_code'];
-            $order->payment_method = $validated['payment_method'];
-            $order->total_amount = $validated['total_amount'];
-            $order->status = 'Pending';
-            $order->save();
-
-            // Optionally, save cart items to order_items table
-            foreach ($cartItems as $item) {
-                DB::table('order_items')->insert([
-                    'order_id' => $order->id,
-                    'item_name' => $item->item_name,
+            $order->user_id = $userId;
+            
+            $order->items = json_encode($cartItems->map(function ($item) {
+                return [
+                    'image' => $item->image,
+                    'name' => $item->name,
                     'price' => $item->price,
                     'quantity' => $item->quantity,
                     'days' => $item->days,
-                ]);
-            }
+                    'total_price' => $item->total_price,
+                ];
+            }));
+            
+            $order->grand_total = $grandTotal;
+            $order->status = 'pending';
+            $order->save();
 
-            // Clear cart
-            Cart::where('cart_token', $cartToken)->delete();
+            // ✅ 4. Clear the cart
+            DB::table('carts')->where('user_id', $userId)->delete();
 
-            DB::commit();
+            // ✅ 5. Return PayMongo checkout link as JSON response
+            return response()->json([
+                'success' => true,
+                'checkout_url' => $paymongoLink
+            ]);
 
-            return redirect()->route('thankyou')->with('success', 'Order placed successfully!');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return redirect()->back()->with('error', 'Something went wrong. Please try again.');
+        } else {
+            return response()->json(['success' => false, 'message' => 'Failed to create PayMongo link'], 500);
         }
     }
 }
