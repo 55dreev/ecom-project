@@ -22,36 +22,36 @@
     <link rel="stylesheet" href="{{ asset('css/homepage.css') }}">
 
     <style>
-        /* Notification styling */
-        #notification-container {
-            position: absolute; /* Use relative instead of fixed */
-            width: 100%;
-            transform: translateY(-30px);
-            z-index: 10;
-        }
+        /* Updated Notification Styling */
+#notification-container {
+    position: absolute; /* Ensures visibility on the screen */
+    top: 97px; 
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999; /* Ensure it appears above other elements */
+    width: 100%;
+    max-width: 655px;
+}
 
-        #notification {
-            background-color: #f87171; /* Red color */
-            color: white;
-            padding: 10px 20px;
-            border-radius: 5px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            max-width: 600px;
-            margin: 0 auto;
-            display: none; /* Hide initially */
-        }
+#notification {
+    background-color: #f87171; /* Red color for error */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    display: none; /* Initially hidden */
+}
+
     </style>
 </head>
-
-<body class="bg-gray-100">
-
 <!-- Notification Container (placed directly below navbar) -->
 <div id="notification-container">
-    <div id="notification" class="hidden">
+    <div id="notification" class="none">
         Item added to cart successfully!
     </div>
 </div>
+<body class="bg-gray-100">
 
 <!-- Main Content -->
 <div class="max-w-4xl mx-auto p-4">
@@ -195,12 +195,18 @@
     </div>
 </div>
 </div>
+<!-- Axios CDN -->
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 <script>
-    document.getElementById('add-to-cart-form').addEventListener('submit', async function(e) {
+document.addEventListener("DOMContentLoaded", function() {
+    const form = document.getElementById('add-to-cart-form');
+    const notification = document.getElementById('notification');
+    const cartCounter = document.getElementById('cart-count');
+
+    form.addEventListener('submit', async function(e) {
         e.preventDefault();
 
-        const form = this;
         const formData = new FormData(form);
 
         try {
@@ -215,35 +221,101 @@
             });
 
             const data = await response.json();
-            const notification = document.getElementById('notification');
 
             if (response.ok && data.success) {
-                notification.textContent = 'Item added to cart successfully!';
-                notification.style.backgroundColor = '#4CAF50'; // Green for success
+                // Show success notification
+                notification.textContent = data.message || 'Item added to cart!';
+                notification.style.backgroundColor = '#4CAF50';  
+                
+                // Update the cart counter dynamically
+                if (cartCounter) {
+                    cartCounter.textContent = data.cart_count;
+                }
             } else {
-                notification.textContent = data.message || 'Failed to add item to cart!';
-                notification.style.backgroundColor = '#f87171'; // Red for error
+                // Show error notification
+                notification.textContent = data.message || 'Failed to add item!';
+                notification.style.backgroundColor = '#f87171';  
             }
 
-            // Show notification
-            notification.style.display = 'block';
+            notification.style.display = 'block';  
+            setTimeout(() => notification.style.display = 'none', 3000);
 
-            setTimeout(() => {
-                notification.style.display = 'none';
-            }, 3000);
         } catch (error) {
             console.error('Error:', error);
-            
-            const notification = document.getElementById('notification');
-            notification.textContent = 'Failed due to network error.';
-            notification.style.backgroundColor = '#f87171';
-            notification.style.display = 'block';
 
-            setTimeout(() => {
-                notification.style.display = 'none';
-            }, 3000);
+            // Show network error notification
+            notification.textContent = 'Network error!';
+            notification.style.backgroundColor = '#f87171';  
+            notification.style.display = 'block';  
+
+            setTimeout(() => notification.style.display = 'none', 3000);
         }
     });
+});
+document.addEventListener('DOMContentLoaded', function () {
+    const removeButtons = document.querySelectorAll('.remove-from-cart');
+
+    removeButtons.forEach(button => {
+        button.addEventListener('click', async function (e) {
+            e.preventDefault();
+
+            const url = this.dataset.url;  // URL for removing the item
+            const cartCounter = document.getElementById('cart-count');
+            const cartItem = this.closest('.cart-item');  // The item row
+
+            try {
+                const response = await fetch(url, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+
+                    if (data.success) {
+                        // ✅ Update the cart counter
+                        if (cartCounter) {
+                            cartCounter.textContent = data.cart_count;
+                        }
+
+                        // ✅ Remove the item from the DOM
+                        if (cartItem) {
+                            cartItem.remove();
+                        }
+
+                        // ✅ Display a notification message
+                        showNotification('Item removed from cart!', true);
+                    } else {
+                        showNotification('Failed to remove item!', false);
+                    }
+                } else {
+                    showNotification('Failed to remove item!', false);
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                showNotification('Network error!', false);
+            }
+        });
+    });
+
+    // ✅ Notification function
+    function showNotification(message, success = true) {
+        const notification = document.getElementById('notification');
+        notification.textContent = message;
+        notification.style.backgroundColor = success ? '#4CAF50' : '#f87171'; 
+        notification.style.display = 'block';
+
+        setTimeout(() => {
+            notification.style.display = 'none';
+        }, 3000);
+    }
+});
+
 </script>
 
 </body>
