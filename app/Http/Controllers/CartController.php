@@ -5,75 +5,94 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use App\Models\Costume;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 
 class CartController extends Controller
 {
+    /**
+     * Add item to cart
+     */
     public function addToCart(Request $request, $id)
 {
     $costume = Costume::findOrFail($id);
+    $userId = auth()->id();
 
-    if (!Session::has('cart_token')) {
-        Session::put('cart_token', Str::uuid()->toString());
+    if (!$userId && !Session::has('cart_token')) {
+        Session::put('cart_token', \Illuminate\Support\Str::uuid()->toString());
     }
+
     $cartToken = Session::get('cart_token');
 
-    // Check if item already exists in cart
     $existingItem = DB::table('carts')
-        ->where('cart_token', $cartToken)
-        ->where('costume_id', $id)
+        ->where(function ($query) use ($userId, $cartToken, $id) {
+            if ($userId) {
+                $query->where('user_id', $userId);
+            } else {
+                $query->where('cart_token', $cartToken);
+            }
+            $query->where('costume_id', $id);
+        })
         ->first();
 
     if ($existingItem) {
-        if ($request->ajax()) {
-            return response()->json(['success' => false, 'message' => 'Item already in cart!']);
-        }
-        return redirect()->route('cart.view')->with('error', 'Item already in cart!');
+        return response()->json(['success' => false, 'message' => 'Item already in cart!']);
     }
 
-    // Debugging - Check if token is generated
-    \Log::info('Cart Token: ' . $cartToken);
-
-    // Insert
     DB::table('carts')->insert([
-        'cart_token' => $cartToken,
-        'costume_id' => $id,
-        'user_id' => auth()->id() ?? null, // if you're not using authentication, set to null
-        'unit_price' => $costume->price,
-        'quantity' => $request->input('quantity', 1),
-        'days' => $request->input('days', 1),
-        'total_price' => $costume->price * $request->input('quantity', 1) * $request->input('days', 1),
-        'created_at' => now(),
-        'updated_at' => now(),
+        'cart_token'   => $cartToken,
+        'user_id'      => $userId,
+        'costume_id'   => $id,
+        'unit_price'   => $costume->price,
+        'quantity'     => $request->input('quantity', 1),
+        'days'         => $request->input('days', 1),
+        'total_price'  => $costume->price * $request->input('quantity', 1) * $request->input('days', 1),
+        'created_at'   => now(),
+        'updated_at'   => now(),
     ]);
 
-    \Log::info('Inserted to cart: Costume ID ' . $id);
+    // ✅ Get the updated cart count dynamically
+    $cartCount = $this->getCartCount($userId, $cartToken);
 
-    if ($request->ajax()) {
-        return response()->json(['success' => true, 'message' => 'Item added to cart!']);
-    }
-
-    return redirect()->route('cart.view')->with('success', 'Item added to cart!');
+    return response()->json([
+        'success'    => true,
+        'message'    => 'Item added to cart!',
+        'cart_count' => $cartCount
+    ]);
 }
 
 
+    /**
+     * View Cart
+     */
     public function viewCart()
     {
+        $userId = auth()->id();
         $cartToken = Session::get('cart_token');
 
         $cartItems = DB::table('carts')
             ->join('costumes', 'carts.costume_id', '=', 'costumes.id')
-            ->where('cart_token', $cartToken)
-            ->select('carts.*', 'costumes.name', 'costumes.price', 'costumes.image')
+            ->where(function ($query) use ($userId, $cartToken) {
+                if ($userId) {
+                    $query->where('carts.user_id', $userId);
+                } else {
+                    $query->where('carts.cart_token', $cartToken);
+                }
+            })
+            ->select('carts.id', 'carts.quantity', 'carts.days', 'carts.total_price', 
+                     'costumes.name', 'costumes.price', 'costumes.image')
             ->get();
 
-        return view('cart', compact('cartItems'));
+        // ✅ Recalculate the cart count
+        $cartCount = $this->getCartCount($userId, $cartToken);
+        session(['cart_count' => $cartCount]);
+
+        return view('cart', compact('cartItems', 'cartCount'));
     }
 
+    /**
+     * Remove item from cart
+     */
     public function removeFromCart($id)
-<<<<<<< Updated upstream
-=======
 {
     $userId = auth()->id();
     $cartToken = Session::get('cart_token');
@@ -96,17 +115,35 @@ class CartController extends Controller
     // ✅ Get the updated cart count dynamically
     $cartCount = $this->getCartCount($userId, $cartToken);
 
-    return redirect()->back()->with('success', 'Item removed from cart!')->with('cart_count', $cartCount);
+    return response()->json([
+        'success'    => true,
+        'message'    => 'Item removed from cart!',
+        'cart_count' => $cartCount
+    ]);
 }
 
     /**
      * Get cart count based on user or guest session
      */
     private function getCartCount($userId, $cartToken)
->>>>>>> Stashed changes
     {
-        DB::table('carts')->where('id', $id)->delete();
-
-        return redirect()->route('cart.view')->with('success', 'Item removed from cart!');
+        return DB::table('carts')
+            ->where(function ($query) use ($userId, $cartToken) {
+                if ($userId) {
+                    $query->where('user_id', $userId);
+                } else {
+                    $query->where('cart_token', $cartToken);
+                }
+            })
+            ->sum('quantity');
     }
+    public function getCartCountAjax()
+{
+    $userId = auth()->id();
+    $cartToken = Session::get('cart_token');
+
+    $cartCount = $this->getCartCount($userId, $cartToken);
+
+    return response()->json(['count' => $cartCount]);
+}
 }

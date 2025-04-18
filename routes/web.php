@@ -3,13 +3,6 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\CostumeController;
-<<<<<<< Updated upstream
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\CartController;
-use App\Http\Controllers\CheckoutController;
-use App\Http\Controllers\ProductController;
-=======
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\AdminOrderController;
@@ -20,7 +13,14 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\AdminChatController;
 use Illuminate\Support\Facades\Auth;
->>>>>>> Stashed changes
+
+Route::get('/cart/count', [CartController::class, 'getCartCountAjax'])->name('cart.count.ajax');
+
+Route::get('/orders', [OrdersController::class, 'index'])->name('orders.view');
+// User-facing order edit and delete routes
+Route::get('/orders/{order}/edit', [OrdersController::class, 'edit'])->name('orders.edit');
+Route::delete('/orders/{order}', [OrdersController::class, 'destroy'])->name('orders.destroy');
+
 
 // routes for cart adding, removing, etc..
 Route::post('/cart/add/{id}', [CartController::class, 'addToCart'])->name('cart.add');
@@ -39,9 +39,6 @@ Route::get('/test-db', function () {
     }
 });
 
-<<<<<<< Updated upstream
-//route to get costumes to show
-=======
 // Order admin
 // Order management routes
     Route::get('/admin/orders', [AdminOrderController::class, 'index'])->name('admin.orders.index');
@@ -58,7 +55,6 @@ Route::post('/cart/remove/{id}', [CartController::class, 'removeFromCart'])->nam
 
 // ✅ Product & Categories Routes
 Route::get('/categories', [CostumeController::class, 'index'])->name('categories');
->>>>>>> Stashed changes
 Route::get('/costume/{id}', [CostumeController::class, 'show'])->name('costume.show');
 Route::post('/products/store', [CostumeController::class, 'store'])->name('products.store');
 Route::delete('/products/delete-by-image', [ProductController::class, 'deleteByImage'])->name('products.deleteByImage');
@@ -92,7 +88,9 @@ Route::get('/product/{id}', function ($id) {
     return "Product details for product ID: " . $id;
 })->name('product.show');
 
-
+// ✅ Checkout Routes
+Route::post('/checkout', [CheckoutController::class, 'checkout'])->name('checkout');
+Route::get('/payment-redirect', [CheckoutController::class, 'redirectToHome'])->name('payment.redirect');
 
 // ✅ Authentication Routes
 Route::post('/signup', [AuthController::class, 'register']);
@@ -109,10 +107,6 @@ Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store
 Route::delete('/admin/products/delete/{id}', [ProductController::class, 'deleteById'])
     ->name('admin.products.delete');
 Route::view('/admin-dashboard', 'admindashboard')->name('admin.dashboard');
-<<<<<<< Updated upstream
-Route::view('/admin-products', 'adminproducts')->name('admin.products');
-Route::view('/admin-chat', 'adminchat')->name('admin.chat');
-=======
 Route::get('/admin-products', [ProductController::class, 'index'])->name('admin.products');
 Route::delete('/admin/orders/delete/{orderId}', [ProductController::class, 'deleteOrder'])->name('orders.destroy');
 Route::put('/admin/orders/update/{orderId}', [ProductController::class, 'updateOrder'])->name('orders.update');
@@ -125,7 +119,6 @@ Route::middleware('auth')->group(function () {
 });
 
 // ✅ Resource Routes
->>>>>>> Stashed changes
 Route::resource('costume', CostumeController::class);
 
 //chat

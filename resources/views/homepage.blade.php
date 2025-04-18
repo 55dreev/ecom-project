@@ -26,7 +26,7 @@
     <a href="{{ route('categoriespage') }}" class="btn btn-primary mx-2">View Categories</a>
     <a href="{{ route('cart.view') }}" class="btn btn-secondary mx-2">Go to Cart</a>
     <a href="{{ route('account') }}" class="btn btn-success mx-2">My Account</a>
-    <a href="{{ route('bookingform') }}" class="btn btn-warning mx-2">Book a Costume</a>
+    <a href="{{ route('admin.orders.index') }}" class="btn btn-warning mx-2">See orders</a>
 </div>
 
 <!-- Product Grid -->
