@@ -3,11 +3,24 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\CostumeController;
+<<<<<<< Updated upstream
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\ProductController;
+=======
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\AdminOrderController;
+use App\Http\Controllers\OrdersController;
+use App\Http\Controllers\ProductController;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\ChatController;
+use App\Http\Controllers\AdminChatController;
+use Illuminate\Support\Facades\Auth;
+>>>>>>> Stashed changes
 
 // routes for cart adding, removing, etc..
 Route::post('/cart/add/{id}', [CartController::class, 'addToCart'])->name('cart.add');
@@ -26,7 +39,26 @@ Route::get('/test-db', function () {
     }
 });
 
+<<<<<<< Updated upstream
 //route to get costumes to show
+=======
+// Order admin
+// Order management routes
+    Route::get('/admin/orders', [AdminOrderController::class, 'index'])->name('admin.orders.index');
+    Route::get('/admin/orders/{order}/edit', [AdminOrderController::class, 'edit'])->name('admin.orders.edit');
+    Route::put('/admin/orders/{order}', [AdminOrderController::class, 'update'])->name('admin.orders.update');
+    Route::delete('/admin/orders/{order}', [AdminOrderController::class, 'destroy'])->name('admin.orders.destroy');
+
+
+
+// ✅ Cart Routes
+Route::post('/cart/add/{id}', [CartController::class, 'addToCart'])->name('cart.add');
+Route::get('/cart', [CartController::class, 'viewCart'])->name('cart.view');
+Route::post('/cart/remove/{id}', [CartController::class, 'removeFromCart'])->name('cart.remove');
+
+// ✅ Product & Categories Routes
+Route::get('/categories', [CostumeController::class, 'index'])->name('categories');
+>>>>>>> Stashed changes
 Route::get('/costume/{id}', [CostumeController::class, 'show'])->name('costume.show');
 Route::post('/products/store', [CostumeController::class, 'store'])->name('products.store');
 Route::delete('/products/delete-by-image', [ProductController::class, 'deleteByImage'])->name('products.deleteByImage');
@@ -77,6 +109,32 @@ Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store
 Route::delete('/admin/products/delete/{id}', [ProductController::class, 'deleteById'])
     ->name('admin.products.delete');
 Route::view('/admin-dashboard', 'admindashboard')->name('admin.dashboard');
+<<<<<<< Updated upstream
 Route::view('/admin-products', 'adminproducts')->name('admin.products');
 Route::view('/admin-chat', 'adminchat')->name('admin.chat');
+=======
+Route::get('/admin-products', [ProductController::class, 'index'])->name('admin.products');
+Route::delete('/admin/orders/delete/{orderId}', [ProductController::class, 'deleteOrder'])->name('orders.destroy');
+Route::put('/admin/orders/update/{orderId}', [ProductController::class, 'updateOrder'])->name('orders.update');
+
+//Admin chat
+Route::middleware('auth')->group(function () {
+    Route::get('/admin/chat', [AdminChatController::class, 'index'])->name('admin.chat');
+    Route::get('/admin/chat/user/{id}', [AdminChatController::class, 'fetchUserMessages'])->name('admin.chat.user');
+    Route::post('/admin/chat/user/{id}', [AdminChatController::class, 'sendMessage'])->name('admin.chat.send');
+});
+
+// ✅ Resource Routes
+>>>>>>> Stashed changes
 Route::resource('costume', CostumeController::class);
+
+//chat
+Route::middleware(['auth'])->group(function () {
+    Route::post('/send-chat', [ChatController::class, 'send'])->name('chat.send');
+    Route::get('/fetch-messages', [ChatController::class, 'fetch'])->name('chat.fetch'); // ✅ This is what was missing
+});
+
+Route::get('/check-auth', function () {
+    return auth()->check() ? '✅ Authenticated as ID: ' . auth()->id() : '❌ Not logged in';
+});
+Broadcast::routes(['middleware' => ['auth']]);

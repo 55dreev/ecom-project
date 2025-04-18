@@ -6,6 +6,25 @@
     <title>Admin Chat Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/laravel-echo/1.11.3/echo.iife.js"></script>
+<script>
+    Pusher.logToConsole = false;
+
+    window.Echo = new Echo({
+        broadcaster: 'pusher',
+        key: "{{ env('PUSHER_APP_KEY') }}",
+        cluster: "{{ env('PUSHER_APP_CLUSTER') }}",
+        forceTLS: true,
+        authEndpoint: '/broadcasting/auth',
+        auth: {
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            }
+        }
+    });
+</script>
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -85,39 +104,125 @@
     <a href="#"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
     <a href="#"><i class="fas fa-box"></i> Orders</a>
     <a href="#"><i class="fas fa-shopping-cart"></i> Products</a>
-    <a href="#"><i class="fas fa-comments"></i> Chat</a>
+    <a href="{{ route('admin.chat') }}"><i class="fas fa-comments"></i> Chat</a>
     <a href="{{ route('logout') }}" class="signout-btn mt-auto">Sign Out</a>
 </div>
 
 <div class="main-content">
     <h2>Admin-User Chat</h2>
-    <div class="chat-container">
-        <div class="chat-box" id="chat-box">
-            <div class="message user-message">Hello Admin!</div>
-            <div class="message admin-message">Hello! How can I assist you?</div>
+    <div class="row">
+    <div class="col-md-4">
+        <div class="list-group">
+            @foreach ($userList as $user)
+                <button class="list-group-item list-group-item-action" onclick="loadChat({{ $user->id }}, '{{ $user->name }}')">
+                    {{ $user->name }}
+                </button>
+            @endforeach
         </div>
     </div>
-    <div class="chat-input">
-        <input type="text" class="form-control" id="chat-message" placeholder="Type a message...">
-        <button class="btn btn-success" onclick="sendMessage()">Send</button>
+    <div class="col-md-8">
+        <h4 id="chat-with-title">Select a user to start</h4>
+        <div class="chat-container">
+            <div class="chat-box" id="chat-box"></div>
+        </div>
+        <div class="chat-input mt-2">
+            <input type="text" class="form-control" id="chat-message" placeholder="Type a message...">
+            <button class="btn btn-success" onclick="sendMessage()">Send</button>
+        </div>
     </div>
 </div>
 
+</div>
+
 <script>
+    let selectedUserId = null;
+    let chatChannel = null;
+        console.log(`Subscribing to chat-channel-${userId}`);
+
+    function loadChat(userId, userName) {
+        selectedUserId = userId;
+        document.getElementById("chat-with-title").innerText = "Chat with " + userName;
+
+        if (chatChannel) {
+        Echo.leave(`private-chat-channel-${userId}`);
+    }
+
+        // Subscribe to real-time channel for this user
+        chatChannel = Echo.private(`chat-channel-${userId}`) // 👈 subscribe to user’s channel
+        .listen('.message-received', (e) => {
+            console.log(`Subscribing to chat-channel-${userId}`);
+
+            if (parseInt(e.message.sender_id) === userId) {
+                const chatBox = document.getElementById("chat-box");
+
+                const wrapper = document.createElement("div");
+                wrapper.classList.add("d-flex", "justify-content-start");
+
+                const messageDiv = document.createElement("div");
+                messageDiv.classList.add("message", "user-message");
+                messageDiv.innerText = e.message.message;
+
+                wrapper.appendChild(messageDiv);
+                chatBox.appendChild(wrapper);
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }
+        });
+        
+        // Load previous messages
+        fetch(`/admin/chat/user/${userId}`)
+            .then(response => response.json())
+            .then(messages => {
+                const chatBox = document.getElementById("chat-box");
+                chatBox.innerHTML = '';
+                messages.forEach(msg => {
+                    const isAdmin = msg.sender_id == 1; // Use loose comparison
+                    const wrapper = document.createElement("div");
+                    wrapper.classList.add("d-flex", isAdmin ? "justify-content-end" : "justify-content-start");
+
+                    const messageDiv = document.createElement("div");
+                    messageDiv.classList.add("message", isAdmin ? "admin-message" : "user-message");
+                    messageDiv.innerText = msg.message;
+
+                    wrapper.appendChild(messageDiv);
+                    chatBox.appendChild(wrapper);
+                });
+                chatBox.scrollTop = chatBox.scrollHeight;
+            });
+    }
+
     function sendMessage() {
-        let input = document.getElementById("chat-message");
-        let message = input.value.trim();
-        if (message !== "") {
-            let chatBox = document.getElementById("chat-box");
-            let newMessage = document.createElement("div");
-            newMessage.classList.add("message", "admin-message");
-            newMessage.textContent = message;
-            chatBox.appendChild(newMessage);
-            input.value = "";
+        const input = document.getElementById("chat-message");
+        const message = input.value.trim();
+        if (!message || selectedUserId === null) return;
+
+        fetch(`/admin/chat/user/${selectedUserId}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": "{{ csrf_token() }}"
+            },
+            body: JSON.stringify({ message })
+        })
+        .then(response => response.json())
+        .then(data => {
+            const chatBox = document.getElementById("chat-box");
+
+            const wrapper = document.createElement("div");
+            wrapper.classList.add("d-flex", "justify-content-end");
+
+            const msgDiv = document.createElement("div");
+            msgDiv.classList.add("message", "admin-message");
+            msgDiv.innerText = data.message;
+
+            wrapper.appendChild(msgDiv);
+            chatBox.appendChild(wrapper);
             chatBox.scrollTop = chatBox.scrollHeight;
-        }
+            input.value = '';
+        });
     }
 </script>
+
+
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

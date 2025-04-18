@@ -96,7 +96,7 @@
         <a href="#" class="sidebar-btn"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
         <a href="#" class="sidebar-btn"><i class="fas fa-box"></i> Orders</a>
         <a href="#" class="sidebar-btn"><i class="fas fa-shopping-cart"></i> Products</a>
-        <a href="#" class="sidebar-btn"><i class="fas fa-comments"></i> Chat</a>
+        <a href="{{ route('admin.chat') }}" class="sidebar-btn"><i class="fas fa-comments"></i> Chat</a>
 
         <a href="{{ route('logout') }}" class="sidebar-btn mt-auto signout">Sign Out</a>
     </div>
@@ -112,6 +112,10 @@
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="tab" href="#advanced">Advanced</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#orders">Orders</a>
+            </li>
+
         </ul>
         <!-- <div class="row">
         <div class="col-md-6">
@@ -170,6 +174,68 @@
     </div>
 </form>
 </div>
+<!-- Orders Tab -->
+<div class="tab-pane fade" id="orders">
+    <h4 class="fw-bold mb-3">Manage Orders</h4>
+    <table class="table table-bordered">
+        <thead class="table-light">
+            <tr>
+                <th>Order ID</th>
+                <th>Customer</th>
+                <th>Image</th>
+                <th>Item</th>
+                <th>Price</th>
+                <th>Status</th>
+                <th>Modify Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($orders as $order)
+                @php
+                    $items = json_decode($order->items);
+                @endphp
+                @foreach($items as $item)
+                    <tr>
+                        <td>{{ $order->id }}</td>
+                        <td>{{ $order->user->name }}</td>
+                        <td>
+                            <img src="{{ asset($item->image) }}" alt="{{ $item->name }}" width="80" height="80">
+                        </td>
+                        <td>{{ $item->name }}</td>
+                        <td>₱{{ number_format($item->price, 2) }}</td>
+                        <td>{{ ucfirst($order->status) }}</td>
+                        <td>
+                            <form method="POST" action="{{ route('orders.update', $order->id) }}" class="d-inline">
+                                @csrf
+                                @method('PUT')
+                                <select name="status" onchange="this.form.submit()">
+                                    <option value="pending" {{ $order->status === 'pending' ? 'selected' : '' }}>Pending</option>
+                                    <option value="approved" {{ $order->status === 'approved' ? 'selected' : '' }}>Approved</option>
+                                    <option value="shipped" {{ $order->status === 'shipped' ? 'selected' : '' }}>Shipped</option>
+                                    <option value="delivered" {{ $order->status === 'delivered' ? 'selected' : '' }}>Delivered</option>
+                                    <option value="cancelled" {{ $order->status === 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                                </select>
+                            </form>
+                        </td>
+                        <td>
+                            <form method="POST" action="{{ route('orders.destroy', $order->id) }}" class="d-inline">
+                                @csrf
+                                @method('DELETE')
+                                <button class="btn btn-danger btn-sm delete-order" type="submit" onclick="return confirm('Are you sure you want to delete this order?')">
+                                    Delete
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                @endforeach
+            @endforeach
+        </tbody>
+    </table>
+</div>
+
+
+
 <div class="tab-pane fade" id="advanced">
     <h4 class="fw-bold mb-3">Manage Costumes</h4>
 

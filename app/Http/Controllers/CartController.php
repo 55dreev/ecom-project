@@ -72,6 +72,38 @@ class CartController extends Controller
     }
 
     public function removeFromCart($id)
+<<<<<<< Updated upstream
+=======
+{
+    $userId = auth()->id();
+    $cartToken = Session::get('cart_token');
+
+    $item = DB::table('carts')
+        ->where('id', $id)
+        ->where(function ($query) use ($userId, $cartToken) {
+            if ($userId) {
+                $query->where('user_id', $userId);
+            } else {
+                $query->where('cart_token', $cartToken);
+            }
+        })
+        ->first();
+
+    if ($item) {
+        DB::table('carts')->where('id', $id)->delete();
+    }
+
+    // ✅ Get the updated cart count dynamically
+    $cartCount = $this->getCartCount($userId, $cartToken);
+
+    return redirect()->back()->with('success', 'Item removed from cart!')->with('cart_count', $cartCount);
+}
+
+    /**
+     * Get cart count based on user or guest session
+     */
+    private function getCartCount($userId, $cartToken)
+>>>>>>> Stashed changes
     {
         DB::table('carts')->where('id', $id)->delete();
 

@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
 {
+<<<<<<< Updated upstream
     // Handle User Registration
     public function register(Request $request) {
         $request->validate([
@@ -31,6 +32,68 @@ class AuthController extends Controller
 
     // Handle User Login
     public function login(Request $request)
+=======
+    /**
+     * Handle user registration.
+     */
+    public function register(Request $request)
+{
+    // ✅ Validate input
+    $validatedData = $request->validate([
+        'username' => 'required|string|max:255',
+        'email' => 'required|email|unique:users,email',
+        'password' => 'required|min:6|confirmed',
+    ]);
+
+    // ✅ Create the user
+    $user = User::create([
+        'name' => $validatedData['username'],
+        'email' => $validatedData['email'],
+        'password' => Hash::make($validatedData['password']), // ✅ Hash the password
+    ]);
+
+    // ✅ Debug: Check if the user is saved
+    if ($user) {
+        return redirect('/login')->with('success', 'Account created! Please log in.');
+    } else {
+        return back()->with('error', 'Failed to create account. Try again.');
+    }
+}
+    /**
+     * Handle user login.
+     */
+    public function login(Request $request)
+{
+    // Validate login input
+    $credentials = $request->validate([
+        'email' => 'required|email',
+        'password' => 'required'
+    ]);
+
+    // Attempt login
+    if (Auth::attempt($credentials)) {
+        $request->session()->regenerate(); // Prevent session fixation attacks
+
+        // Check if the user is the admin
+        if (auth()->user()->email === 'admin@suitup.com') {
+            return redirect('/admin-products'); // ✅ change this to your admin dashboard route
+        }
+
+        // Regular user
+        return redirect()->intended('/account');
+    }
+
+    // If login fails, return with error
+    return back()->withErrors([
+        'email' => 'Invalid credentials.',
+    ])->onlyInput('email');
+}
+
+    /**
+     * Handle user logout.
+     */
+    public function logout(Request $request)
+>>>>>>> Stashed changes
     {
         // Validate the login form input
         $request->validate([
