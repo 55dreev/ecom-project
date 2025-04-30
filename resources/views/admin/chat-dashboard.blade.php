@@ -106,7 +106,7 @@
     <h2>Admin Panel</h2>
     <a href="#"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
     <a href="#"><i class="fas fa-box"></i> Orders</a>
-    <a href="#"><i class="fas fa-shopping-cart"></i> Products</a>
+    <a href="{{ route('admin.products') }}"><i class="fas fa-shopping-cart"></i> Products</a>
     <a href="{{ route('admin.chat') }}"><i class="fas fa-comments"></i> Chat</a>
     <a href="{{ route('logout') }}" class="signout-btn mt-auto">Sign Out</a>
 </div>

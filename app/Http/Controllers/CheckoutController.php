@@ -53,23 +53,23 @@ class CheckoutController extends Controller
             }
 
             // ✅ 3. Store the order in the database with full item details
-            $order = new Order();
-            $order->user_id = $userId;
-            
-            $order->items = json_encode($cartItems->map(function ($item) {
-                return [
-                    'image' => $item->image,
-                    'name' => $item->name,
-                    'price' => $item->price,
-                    'quantity' => $item->quantity,
-                    'days' => $item->days,
+            foreach ($cartItems as $item) {
+                $singleItemJson = json_encode([[
+                    'image'       => $item->image,
+                    'name'        => $item->name,
+                    'price'       => $item->price,
+                    'quantity'    => $item->quantity,
+                    'days'        => $item->days,
                     'total_price' => $item->total_price,
-                ];
-            }));
+                ]]);
             
-            $order->grand_total = $grandTotal;
-            $order->status = 'pending';
-            $order->save();
+                $order = new Order();
+                $order->user_id     = $userId;
+                $order->items       = $singleItemJson;
+                $order->grand_total = $item->total_price;    // per‐item total
+                $order->status      = 'pending';
+                $order->save();
+            }
 
             // ✅ 4. Clear the cart
             DB::table('carts')->where('user_id', $userId)->delete();

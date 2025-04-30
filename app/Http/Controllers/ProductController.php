@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Costume;
 use App\Models\Order; // assuming you have an Order model set up
 use Illuminate\Support\Facades\Storage;
+use App\Events\OrderUpdated;
 
 class ProductController extends Controller
 {
@@ -111,19 +112,22 @@ class ProductController extends Controller
     // Update an order. For example, you might update the order status.
     public function updateOrder(Request $request, $orderId)
     {
-        $order = Order::find($orderId);
+        $order = Order::where('id', $orderId)->first();
         if (!$order) {
             return response()->json(['success' => false, 'message' => 'Order not found!'], 404);
         }
 
         // For demonstration, we'll assume that updating an order means changing its status.
         // You can adjust the validation and logic as needed.
-        $request->validate([
-            'status' => 'required|string|max:100'
+        $validated = $request->validate([
+            'status' => 'required|string',
         ]);
-
-        $order->status = $request->status;
+    
+        $order->status = $validated['status'];
         $order->save();
+    
+        broadcast(new OrderUpdated($order))->toOthers(); // 🔵 Fire the event after saving
+    
         return response('', 204);
     }
 
@@ -137,7 +141,12 @@ class ProductController extends Controller
     }
 
     $order->delete();
-
+    if (request()->ajax()) {
+        return response()->json([
+            'success' => true,
+            'message' => 'Order #' . $order->id . ' deleted',
+        ]);
+    }
     // Return 204 (No Content) instead of a JSON message
     return response('', 204);
 }

@@ -27,7 +27,7 @@
     <!-- Navigation Bar -->
     <nav class="navbar navbar-expand-lg bg-light">
         <div class="container-fluid">
-            <a class="navbar-brand" href="{{ route('homepage') }}">Suit Up</a>
+            <a class="navbar-brand" href="{{ route('homepage') }}" id="homeLink">Suit Up</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -35,7 +35,8 @@
             <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('categoriespage') }}">Costumes</a>
+                    <a id="categoriesLink" href="{{ route('categoriespage') }}" class="nav-link">Costumes</a>
+
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('about') }}">About Us</a>
@@ -48,7 +49,7 @@
 
             <div class="nav-icons d-flex align-items-center">
                 <!-- Account Icon -->
-                <a href="{{ route('account') }}" class="me-3">
+                <a href="{{ route('account.edit') }}" class="me-3">
                     <i class="bi bi-person"></i>
                 </a>
                 <!-- Cart Icon with Counter -->
@@ -94,7 +95,7 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
 <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/laravel-echo/1.11.3/echo.iife.js"></script>
@@ -235,6 +236,31 @@ setTimeout(scrollToBottom, 300);
         messageInput.value = '';
         document.getElementById('chatContent').scrollTop = document.getElementById('chatContent').scrollHeight;
     };
+
+    document.getElementById('categoriesLink').addEventListener('click', function(e) {
+  e.preventDefault();
+  const url = this.href;
+
+  // Call your badge update and wait for it to finish
+  fetch('{{ route("cart.count") }}', {
+    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+    cache: 'no-store'
+  })
+  .then(res => res.json())
+  .then(json => {
+    const badge = document.getElementById('cart-count');
+    if (badge && Number.isInteger(json.cart_count)) {
+      badge.textContent = json.cart_count;
+    }
+  })
+  .catch(console.error)
+  .finally(() => {
+    // Now that we've updated (or at least attempted), navigate
+    window.location.href = url;
+  });
+});
+
+
 </script>
 
 

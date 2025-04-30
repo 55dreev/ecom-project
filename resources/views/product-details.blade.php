@@ -177,44 +177,54 @@
         daysInput.addEventListener("input", updateTotalPrice);
     });
     document.getElementById("add-to-cart-form").addEventListener("submit", function(event) {
-    event.preventDefault(); // Prevent default form submission
+  event.preventDefault(); // Prevent default form submission
 
-    let form = event.target;
-    let formData = new FormData(form);
+  let form = event.target;
+  let formData = new FormData(form);
 
-    fetch(form.action, {
-        method: "POST",
-        body: formData,
-        headers: {
-            "X-Requested-With": "XMLHttpRequest",
-            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        let notification = document.getElementById("cart-notification");
+  fetch(form.action, {
+    method: "POST",
+    body: formData,
+    headers: {
+      "X-Requested-With": "XMLHttpRequest",
+      "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+    }
+  })
+  .then(response => response.json())
+  .then(data => {
+    let notification = document.getElementById("cart-notification");
+    const countEl = document.getElementById("cart-count");
 
-        if (data.success) {
-            // Success message
-            notification.textContent = data.message; // "Item added to cart!"
-            notification.classList.remove("hidden");
-            notification.classList.remove("bg-red-500");
-            notification.classList.add("bg-green-500");
-        } else {
-            // Error message (item already in cart)
-            notification.textContent = data.message; // "Item already in cart!"
-            notification.classList.remove("hidden");
-            notification.classList.remove("bg-green-500");
-            notification.classList.add("bg-red-500");
-        }
+    if (data.success) {
+      // Success message
+      notification.textContent = data.message; // "Item added to cart!"
+      notification.classList.remove("hidden","bg-red-500");
+      notification.classList.add("bg-green-500");
+    } else {
+      // Error message (item already in cart)
+      notification.textContent = data.message; // "Item already in cart!"
+      notification.classList.remove("hidden","bg-green-500");
+      notification.classList.add("bg-red-500");
+    }
 
-        // Hide notification after 3 seconds
-        setTimeout(() => {
-            notification.classList.add("hidden");
-        }, 3000);
-    })
-    .catch(error => console.error("Error:", error));
+    // **NEW**: update the cart count badge
+if (countEl && data.cart_count != null) {
+  countEl.textContent = data.cart_count;
+  localStorage.setItem('cartCount', data.cart_count);
+  // optional: add a quick highlight
+  countEl.classList.add('animate-pulse');
+  setTimeout(() => countEl.classList.remove('animate-pulse'), 300);
+}
+
+
+    // Hide notification after 3 seconds
+    setTimeout(() => {
+      notification.classList.add("hidden");
+    }, 1000);
+  })
+  .catch(error => console.error("Error:", error));
 });
+
     
 
 

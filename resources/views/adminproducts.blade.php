@@ -94,8 +94,7 @@
     <div class="sidebar">
         <img src="{{ asset('images/suitup.png') }}" alt="Suit Up Logo" class="img-fluid mb-3" style="max-width: 150px; margin-left: 35px;">
         <a href="#" class="sidebar-btn"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
-        <a href="#" class="sidebar-btn"><i class="fas fa-box"></i> Orders</a>
-        <a href="#" class="sidebar-btn"><i class="fas fa-shopping-cart"></i> Products</a>
+        <a href="{{ route('admin.products') }}" class="sidebar-btn"><i class="fas fa-shopping-cart"></i> Products</a>
         <a href="{{ route('admin.chat') }}" class="sidebar-btn"><i class="fas fa-comments"></i> Chat</a>
 
         <a href="{{ route('logout') }}" class="sidebar-btn mt-auto signout">Sign Out</a>

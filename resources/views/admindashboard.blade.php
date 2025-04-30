@@ -112,8 +112,7 @@
 
         
     <a href="#" class="sidebar-btn"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
-    <a href="#" class="sidebar-btn"><i class="fas fa-box"></i> Orders</a>
-    <a href="#" class="sidebar-btn"><i class="fas fa-shopping-cart"></i> Products</a>
+    <a href="{{ route('admin.products') }}" class="sidebar-btn"><i class="fas fa-shopping-cart"></i> Products</a>
     <a href="{{ route('admin.chat') }}" class="sidebar-btn"><i class="fas fa-comments"></i> Chat</a>
 
 
