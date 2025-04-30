@@ -12,6 +12,7 @@ class CartController extends Controller
     /**
      * Add item to cart
      */
+    
     public function addToCart(Request $request, $id)
 {
     $costume = Costume::findOrFail($id);
@@ -115,12 +116,20 @@ class CartController extends Controller
     // ✅ Get the updated cart count dynamically
     $cartCount = $this->getCartCount($userId, $cartToken);
 
-    return response()->json([
-        'success'    => true,
-        'message'    => 'Item removed from cart!',
-        'cart_count' => $cartCount
-    ]);
+    if (request()->ajax()) {
+        return response()->json([
+            'success'    => true,
+            'message'    => 'Item removed from cart!',
+            'cart_count' => $cartCount,
+        ]);
+    }
+
+    // fallback for non-AJAX (optional redirect)
+    return redirect()
+        ->route('cart.view')
+        ->with('success', 'Item removed from cart!');
 }
+
 
     /**
      * Get cart count based on user or guest session

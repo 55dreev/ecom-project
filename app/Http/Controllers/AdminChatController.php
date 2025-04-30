@@ -55,5 +55,31 @@ class AdminChatController extends Controller
 
         return response()->json($message);
     }
+
+    public function markAsRead($userId)
+{
+    $adminId = 2; // your admin ID
+
+    Message::where('sender_id', $userId)
+           ->where('receiver_id', $adminId)
+           ->where('is_read', false)
+           ->update(['is_read' => true]);
+
+    return response()->json(['success' => true]);
+}
+
+public function getUnreadCounts()
+{
+    $adminId = 2;
+
+    $unread = Message::select('sender_id', \DB::raw('COUNT(*) as unread_count'))
+        ->where('receiver_id', $adminId)
+        ->where('is_read', false)
+        ->groupBy('sender_id')
+        ->get();
+
+    return response()->json($unread);
+}
+
 }
 

@@ -7,45 +7,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
-        body {
-            background-color: #E8E6F1;
-            font-family: Arial, sans-serif;
-        }
         .wrapper {
             display: flex;
             min-height: 100vh; /* Full height */
-        }
-        .sidebar {
-            width: 250px;
-            background: #fff; /* White sidebar */
-            padding: 20px;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: start;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-        }
-        .sidebar h2 {
-            text-align: center;
-            color: #333;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-        .sidebar a {
-            display: block;
-            padding: 12px;
-            color: #333;
-            text-decoration: none;
-            margin: 10px 0;
-            background: #f8f9fa; /* Light gray for better contrast */
-            border-radius: 12px; /* Smoother edges */
-            text-align: center;
-            transition: background 0.3s ease-in-out, transform 0.2s ease-in-out;
-        }
-        .sidebar a:hover {
-            background: #10eb4b; /* Green on hover */
-            color: white;
-            transform: scale(1.05);
         }
         .signout {
             margin-top: auto;
@@ -81,9 +45,36 @@
         .btn-primary:hover {
             background: #0db33a;
         }
+        body {
+            font-family: Arial, sans-serif;
 
-        .sidebar-btn i {
-            margin-right: 10px; 
+            background-color: #E8E6F1;
+        }
+        .sidebar {
+            width: 250px;
+            background: #fff;
+            padding: 20px;
+            height: 133vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+        .sidebar a {
+            display: block;
+            padding: 12px;
+            color: #333;
+            text-decoration: none;
+            margin: 10px 0;
+            background: #f8f9fa;
+            border-radius: 12px;
+            text-align: center;
+            transition: background 0.3s ease-in-out, transform 0.2s ease-in-out;
+        }
+        .sidebar a:hover {
+            background: #10eb4b;
+            color: white;
+            transform: scale(1.05);
         }
     </style>
     </style>
@@ -91,15 +82,13 @@
 <body>
 
 <div class="wrapper">
-    <div class="sidebar">
-        <img src="{{ asset('images/suitup.png') }}" alt="Suit Up Logo" class="img-fluid mb-3" style="max-width: 150px; margin-left: 35px;">
-        <a href="#" class="sidebar-btn"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
-        <a href="#" class="sidebar-btn"><i class="fas fa-box"></i> Orders</a>
-        <a href="#" class="sidebar-btn"><i class="fas fa-shopping-cart"></i> Products</a>
-        <a href="{{ route('admin.chat') }}" class="sidebar-btn"><i class="fas fa-comments"></i> Chat</a>
-
-        <a href="{{ route('logout') }}" class="sidebar-btn mt-auto signout">Sign Out</a>
-    </div>
+<div class="sidebar">
+    <h2>Admin Panel</h2>
+    <a href="{{ route('admin.dashboard') }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+    <a href="{{ route('admin.products') }}"><i class="fas fa-shopping-cart"></i> Products</a>
+    <a href="{{ route('admin.chat') }}"><i class="fas fa-comments"></i> Chat</a>
+    <a href="{{ route('logout') }}" class="signout-btn mt-auto">Sign Out</a>
+</div>
 
     <div class="main-content">
 

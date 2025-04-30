@@ -4,7 +4,12 @@
 
 @section('content')
 <head>
-    <link rel="stylesheet" href="{{ asset('css/homepage.css') }}">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>T SHOP - Orders</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.2/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="{{ asset('css/homepage.css') }}">
 </head>
 <style>
     .cart-section {
@@ -52,6 +57,7 @@
         border-radius: 20px;
         font-size: 14px;
     }
+
 </style>
 
 <div class="cart-section">
@@ -61,37 +67,52 @@
     @if($orders->isEmpty())
         <p>No orders yet.</p>
     @else
-        <table>
-            <thead>
-                <tr>
-                    <th>Image</th>
-                    <th>Item</th>
-                    <th>Price</th>
-                    <th>Quantity</th>
-                    <th>Days</th>
-                    <th>Total</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($orders as $order)
-                    @php
-                        $items = json_decode($order->items);
-                    @endphp
-                    @foreach($items as $item)
-                        <tr>
-                            <td><img src="{{ asset($item->image) }}" alt="{{ $item->name }}" width="80"></td>
-                            <td>{{ $item->name }}</td>
-                            <td>₱{{ number_format($item->price, 2) }}</td>
-                            <td>{{ $item->quantity }}</td>
-                            <td>{{ $item->days }}</td>
-                            <td>₱{{ number_format($item->total_price, 2) }}</td>
-                            <td>{{ ucfirst($order->status) }}</td>
-                        </tr>
-                    @endforeach
-                @endforeach
-            </tbody>
-        </table>
+    <table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th colspan="4">Items</th>
+      <th>Status</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    @foreach($orders as $order)
+      {{-- order header row --}}
+      <tr class="order-header">
+        <td>{{ $order->id }}</td>
+        <td colspan="4">
+          {{-- you could also summarize, but we’ll just say “X items” --}}
+          {{ count(json_decode($order->items)) }} item(s)
+        </td>
+        <td>
+          <span class="status-badge">{{ ucfirst($order->status) }}</span>
+        </td>
+        <td>
+          <a href="{{ route('orders.edit', $order) }}">Edit</a>
+          <form action="{{ route('orders.destroy', $order) }}" method="POST" style="display:inline">
+            @csrf @method('DELETE')
+            <button>Delete</button>
+          </form>
+        </td>
+      </tr>
+
+      {{-- now each line item --}}
+      @foreach(json_decode($order->items) as $item)
+      <tr>
+        <td></td> {{-- empty under the “ID” column --}}
+        <td><img src="{{ asset($item->image) }}" width="60"></td>
+        <td>{{ $item->name }}</td>
+        <td>{{ $item->quantity }} × ₱{{ number_format($item->price,2) }}</td>
+        <td>{{ $item->days }} day(s)</td>
+        <td></td> {{-- empty under the “Status” column --}}
+        <td></td> {{-- empty under “Actions” --}}
+      </tr>
+      @endforeach
+    @endforeach
+  </tbody>
+</table>
+
     @endif
 </div>
 @endsection

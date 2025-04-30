@@ -12,7 +12,11 @@ class CostumeController extends Controller
     public function index()
     {
         $costumes = Costume::all(); // Fetch all costumes
-        return view('categoriespage', compact('costumes')); // Pass to view
+        return response()
+        ->view('categoriespage', compact('costumes'))
+        ->header('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate')
+        ->header('Pragma', 'no-cache')
+        ->header('Expires', '0');
     }
     public function show($id)
     {

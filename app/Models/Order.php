@@ -9,6 +9,8 @@ class Order extends Model
 {
     use HasFactory;
 
+    
+
     protected $fillable = [
         'user_id',
         'items',           // Store cart items as JSON

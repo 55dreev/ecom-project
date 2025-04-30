@@ -82,6 +82,15 @@
 
 
 <script>
+   updateCartBadge();
+
+// whenever some other page writes cartCount, update immediately:
+window.addEventListener('storage', function(e) {
+  if (e.key === 'cartCount') {
+    document.getElementById('cart-count').textContent = e.newValue;
+  }
+});
+
     const priceRange = document.getElementById("priceRange");
     const maxPrice = document.getElementById("max-price");
     const productContainer = document.getElementById("productContainer");
@@ -100,6 +109,28 @@
             product.style.display = productPrice <= selectedPrice ? "block" : "none";
         }
     }
+    function updateCartBadge() {
+    fetch('{{ route("cart.count") }}', {
+      headers: { 'X-Requested-With': 'XMLHttpRequest' },
+      cache: 'no-store'      // force fresh data
+    })
+    .then(res => res.json())
+    .then(json => {
+      const b = document.getElementById('cart-count');
+      if (b && Number.isInteger(json.cart_count)) {
+        b.textContent = json.cart_count;
+      }
+    })
+    .catch(console.error);
+  }
+
+  // Always fetch on first load
+  document.addEventListener('DOMContentLoaded', updateCartBadge);
+
+  // Catch full reloads (pageshow will also fire here)
+  window.addEventListener('pageshow', function(event) {
+    updateCartBadge();
+  });
 </script>
 </body>
 </head>

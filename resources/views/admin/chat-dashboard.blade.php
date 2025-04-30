@@ -104,9 +104,8 @@
 <body>
 <div class="sidebar">
     <h2>Admin Panel</h2>
-    <a href="#"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
-    <a href="#"><i class="fas fa-box"></i> Orders</a>
-    <a href="#"><i class="fas fa-shopping-cart"></i> Products</a>
+    <a href="{{ route('admin.dashboard') }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+    <a href="{{ route('admin.products') }}"><i class="fas fa-shopping-cart"></i> Products</a>
     <a href="{{ route('admin.chat') }}"><i class="fas fa-comments"></i> Chat</a>
     <a href="{{ route('logout') }}" class="signout-btn mt-auto">Sign Out</a>
 </div>
@@ -211,13 +210,40 @@ Echo.private(`chat-channel-${adminId}`)
     }
 });
 
+// 📦 Fetch unread counts and show badges
+document.addEventListener('DOMContentLoaded', () => {
+    fetch('/admin/chat/unread-counts')
+        .then(response => response.json())
+        .then(unreadList => {
+            unreadList.forEach(u => {
+                const userBtn = document.getElementById(`user-button-${u.sender_id}`);
+                if (userBtn) {
+                    // If badge already exists, update it
+                    let badge = userBtn.querySelector('.badge');
+                    if (badge) {
+                        badge.innerText = u.unread_count;
+                    } else {
+                        badge = document.createElement("span");
+                        badge.className = "badge bg-danger rounded-pill";
+                        badge.innerText = u.unread_count;
+                        userBtn.appendChild(badge);
+                    }
+                }
+            });
+        })
+        .catch(error => console.error('Error loading unread counts:', error));
+});
+
 function loadChat(userId, userName) {
     selectedUserId = userId;
     selectedUserName = userName;
     document.getElementById("chat-with-title").innerText = "Chat with " + userName;
 
-    const badge = document.getElementById(`badge-${userId}`);
+    const userBtn = document.getElementById(`user-button-${userId}`);
+if (userBtn) {
+    const badge = userBtn.querySelector('.badge');
     if (badge) badge.remove();
+}
 
     chatBox = document.getElementById("chat-box");
     fetch(`/admin/chat/user/${userId}`)
@@ -239,6 +265,14 @@ function loadChat(userId, userName) {
             });
 
             scrollToBottom();
+
+            // ✅ Mark all as read after loading messages
+            fetch(`/admin/chat/user/${userId}/mark-as-read`, {
+                method: "POST",
+                headers: {
+                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
+                }
+            });
         });
 }
 

@@ -25,7 +25,7 @@
 <div class="container text-center my-4">
     <a href="{{ route('categoriespage') }}" class="btn btn-primary mx-2">View Categories</a>
     <a href="{{ route('cart.view') }}" class="btn btn-secondary mx-2">Go to Cart</a>
-    <a href="{{ route('account') }}" class="btn btn-success mx-2">My Account</a>
+    <a href="{{ route('account.edit') }}" class="btn btn-success mx-2">My Account</a>
     <a href="{{ route('admin.orders.index') }}" class="btn btn-warning mx-2">See orders</a>
 </div>
 
@@ -57,4 +57,65 @@
         @endforeach
     </div>
 </div>
+
+@push('scripts')
+<script>
+    updateCartBadge();
+    (function() {
+    // Only reload once per navigation
+    if (sessionStorage.getItem('didHardReload')) {
+      sessionStorage.removeItem('didHardReload');
+      return;
+    }
+
+    window.addEventListener('pageshow', function(event) {
+      // event.persisted is true when coming back from bfcache
+      // performance.navigation.type === 1 is a manual reload (we skip)
+      const navEntries = performance.getEntriesByType('navigation');
+      const navType = navEntries[0]?.type || '';
+      
+      if (event.persisted || navType === 'navigate') {
+        // mark so we don't infinite‐reload
+        sessionStorage.setItem('didHardReload', '1');
+        window.location.reload(true);
+      }
+    });
+  })();
+// whenever some other page writes cartCount, update immediately:
+window.addEventListener('storage', function(e) {
+  if (e.key === 'cartCount') {
+    document.getElementById('cart-count').textContent = e.newValue;
+  }
+});
+function updateCartBadge() {
+    fetch('{{ route("cart.count") }}', {
+      headers: { 'X-Requested-With': 'XMLHttpRequest' },
+      cache: 'no-store'
+    })
+    .then(res => res.json())
+    .then(json => {
+      const b = document.getElementById('cart-count');
+      if (b && Number.isInteger(json.cart_count)) {
+        b.textContent = json.cart_count;
+      }
+    })
+    .catch(console.error);
+  }
+
+  // on initial load
+  document.addEventListener('DOMContentLoaded', updateCartBadge);
+
+  // catch back/forward navigations
+  window.addEventListener('pageshow', updateCartBadge);
+
+  // catch when returning from another page via a link or tab switch
+  window.addEventListener('focus', updateCartBadge);
+
+  // **NEW** when page becomes visible again
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden) updateCartBadge();
+});
+</script>
+@endpush
+
 @endsection

@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\AdminChatController;
+use App\Http\Controllers\AccountController;
+use App\Http\Controllers\AdminDashboardController;
 use Illuminate\Support\Facades\Auth;
 
 Route::get('/cart/count', [CartController::class, 'getCartCountAjax'])->name('cart.count.ajax');
@@ -45,13 +47,27 @@ Route::get('/test-db', function () {
     Route::get('/admin/orders/{order}/edit', [AdminOrderController::class, 'edit'])->name('admin.orders.edit');
     Route::put('/admin/orders/{order}', [AdminOrderController::class, 'update'])->name('admin.orders.update');
     Route::delete('/admin/orders/{order}', [AdminOrderController::class, 'destroy'])->name('admin.orders.destroy');
-
+    
+    Route::middleware('auth')->group(function(){
+        // Show edit form
+        Route::get('/account', [AccountController::class, 'edit'])
+             ->name('account.edit');
+    
+        // Handle the form submit
+        Route::post('/account', [AccountController::class, 'update'])
+             ->name('account.update');
+    });
+    
+    
 
 
 // ✅ Cart Routes
 Route::post('/cart/add/{id}', [CartController::class, 'addToCart'])->name('cart.add');
 Route::get('/cart', [CartController::class, 'viewCart'])->name('cart.view');
 Route::post('/cart/remove/{id}', [CartController::class, 'removeFromCart'])->name('cart.remove');
+// returns JSON { cart_count: N }
+Route::get('/cart/count', [CartController::class, 'getCartCount'])->name('cart.count');
+
 
 // ✅ Product & Categories Routes
 Route::get('/categories', [CostumeController::class, 'index'])->name('categories');
@@ -64,7 +80,7 @@ Route::view('/homepage', 'homepage')->name('homepage');
 Route::view('/welcome', 'welcome')->name('welcome');
 Route::view('/login', 'login')->name('login');
 Route::view('/signup', 'signup')->name('signup');
-Route::view('/account', 'account')->name('account'); 
+//Route::view('/account1', 'account')->name('account1'); 
 Route::view('/categoriespage', 'categoriespage')->name('categoriespage');
 Route::get('/booking-form', [CheckoutController::class, 'showCheckout'])->name('bookingform');
 Route::view('/about', 'about')->name('about');
@@ -106,7 +122,7 @@ Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store
 // ✅ Admin Routes
 Route::delete('/admin/products/delete/{id}', [ProductController::class, 'deleteById'])
     ->name('admin.products.delete');
-Route::view('/admin-dashboard', 'admindashboard')->name('admin.dashboard');
+Route::get('/admin-dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
 Route::get('/admin-products', [ProductController::class, 'index'])->name('admin.products');
 Route::delete('/admin/orders/delete/{orderId}', [ProductController::class, 'deleteOrder'])->name('orders.destroy');
 Route::put('/admin/orders/update/{orderId}', [ProductController::class, 'updateOrder'])->name('orders.update');
@@ -126,8 +142,16 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/send-chat', [ChatController::class, 'send'])->name('chat.send');
     Route::get('/fetch-messages', [ChatController::class, 'fetch'])->name('chat.fetch'); // ✅ This is what was missing
 });
+Route::post('/admin/chat/user/{userId}/mark-as-read', [AdminChatController::class, 'markAsRead']);
+Route::get('/admin/chat/unread-counts', [AdminChatController::class, 'getUnreadCounts']);
+
 
 Route::get('/check-auth', function () {
     return auth()->check() ? '✅ Authenticated as ID: ' . auth()->id() : '❌ Not logged in';
 });
 Broadcast::routes(['middleware' => ['auth']]);
+
+Broadcast::channel('orders.{orderId}', function ($user, $orderId) {
+    // Allow if the user can see the order
+    return true; // (Or better: check if user owns the order)
+});

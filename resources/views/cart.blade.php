@@ -5,8 +5,12 @@
 @section('content')
 
 <head>
-    <link rel="stylesheet" href="{{ asset('css/cart.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/homepage.css') }}">
     <style>
+            .hidden {
+        display: none !important;
+        }
+
         .cart-section {
             max-width: 1100px;
             margin: 0 auto;
@@ -121,6 +125,10 @@
 </head>
 
 <div class="cart-section">
+<div id="cart-notification" class="alert alert-success fade" role="alert" style="display:none">
+</div>
+
+
     <div class="cart-header">
         <h2>My Cart</h2>
         <a href="{{ route('categoriespage') }}">← Continue Browsing</a>
@@ -137,14 +145,16 @@
         $grandTotal = $userCartItems->sum('total_price');
     @endphp
 
-    @if($userCartItems->isEmpty())
-        <div class="cart-content">
-            <p>Your cart is currently empty.</p>
-            <a href="{{ route('categoriespage') }}" class="text-decoration-none">Continue Browsing</a>
-        </div>
-        <hr>
-    @else
-        <div id="cart-container">
+    <div id="empty-cart-block" style="{{ $userCartItems->isEmpty() ? '' : 'display:none' }}">
+    <div class="cart-content">
+        <p>Your cart is currently empty.</p>
+        <a href="{{ route('categoriespage') }}" class="text-decoration-none">
+        Continue Browsing
+        </a>
+    </div>
+    <hr>
+    </div>
+    <div id="cart-container" style="{{ $userCartItems->isEmpty() ? 'display:none' : '' }}">
             <table>
                 <thead>
                     <tr>
@@ -159,7 +169,7 @@
                 </thead>
                 <tbody>
                     @foreach($userCartItems as $item)
-                    <tr>
+                    <tr id="cart-row-{{ $item->id }}">
                         <td><img src="{{ asset($item->image) }}" alt="{{ $item->name }}"></td>
                         <td>{{ $item->name }}</td>
                         <td>₱{{ number_format($item->price, 2) }}</td>
@@ -167,16 +177,16 @@
                         <td>{{ $item->days }}</td>
                         <td>₱{{ number_format($item->total_price, 2) }}</td>
                         <td>
-                            <form action="{{ route('cart.remove', ['id' => $item->id]) }}" method="POST">
-                                @csrf
-                                <button type="submit" class="remove-btn">Remove</button>
-                            </form>
+                        <form class="remove-from-cart-form inline" action="{{ route('cart.remove', ['id' => $item->id]) }}" method="POST">
+                        @csrf
+                        <button type="submit" class="remove-btn">Remove</button>
+                        </form>
                         </td>
                     </tr>
                     @endforeach
                 </tbody>
             </table>
-
+           
             <div class="cart-footer">
                 <div class="total-price">Total: ₱{{ number_format($grandTotal, 2) }}</div>
                 
@@ -188,12 +198,14 @@
                 </form>
             </div>
         </div>
-    @endif
     <hr>
 </div>
 
+
 <!-- ✅ Include jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+@push('scripts')
 
 <script>
     $(document).ready(function () {
@@ -225,7 +237,68 @@
             });
         });
     });
+    document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.remove-from-cart-form').forEach(form => {
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+
+      const note    = document.getElementById('cart-notification');
+      const badge   = document.getElementById('cart-count');
+      const formData= new FormData(form);
+
+      try {
+        const res  = await fetch(form.action, {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+          }
+        });
+        const data = await res.json();
+
+        // inject message & swap classes
+        note.textContent = data.message;
+        note.classList.remove('alert-success','alert-danger');
+        note.classList.add(data.success ? 'alert-success' : 'alert-danger');
+        note.style.display = 'block';
+
+        // update badge
+        if (badge && data.cart_count != null) {
+          badge.textContent = data.cart_count;
+          badge.classList.add('animate-pulse');
+          setTimeout(()=> badge.classList.remove('animate-pulse'), 300);
+        }
+
+        // remove the row
+        if (data.success) {
+          form.closest('tr')?.remove();
+          // swap to empty view if needed
+          const tbody = document.querySelector('#cart-container tbody');
+          if (!tbody || tbody.children.length===0) {
+            document.getElementById('cart-container').style.display = 'none';
+            document.getElementById('empty-cart-block').style.display = '';
+          }
+        }
+
+        // auto-dismiss after 1s
+        setTimeout(() => {
+          // fade out
+          note.classList.add('fade');
+          note.classList.remove('show');
+          // completely hide when done
+          note.addEventListener('transitionend', () => note.style.display = 'none', { once: true });
+        }, 1000);
+
+      } catch (err) {
+        console.error(err);
+      }
+    });
+  });
+});
 </script>
+@endpush
+
 
 
 @endsection
